@@ -280,6 +280,10 @@ get_trapezoid_height:
 	blt	invalid_dimension_trapezoid_height
 
 	@ Call trapezoid_area subroutine
+	ldr	r2, =int_a		@ Load base length into r2
+	ldr	r2, [r2]
+	ldr	r3, =int_b		@ Load upper base length into r3
+	ldr	r3, [r3]
 	push	{r2, r3, r4}		@ Push base, upper base, and height onto the stack
 	bl	trapezoid_area
 
