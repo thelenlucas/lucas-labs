@@ -16,9 +16,7 @@
 	.text
 
 main:
-	@ Welcome Message
-	ldr	r0, =welcome_message
-	bl	printf
+	@ Just used as an entry here
 
 	b	loop
 
@@ -29,6 +27,10 @@ input_error:
 	b	loop
 
 loop:
+	@ Welcome Message
+	ldr	r0, =welcome_message
+	bl	printf
+	
 	@ Get the user's entry
 	ldr	r0, =request_entry
 	ldr	r1, =buffer
