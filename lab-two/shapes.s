@@ -42,7 +42,7 @@ loop:
 
 	@ Triangle?
 	cmp	r1, #1
-	beq	quad_calc
+	beq	triangle_calc
 
 	@ If we didn't hit any of those conditions, we need to show error and try again
 	@b	input_error
