@@ -114,13 +114,13 @@ invalid_dimension_triangle_base:
 	@ Handle invalid base length input
 	ldr	r0, =invalid_dimension	@ Load invalid dimension message
 	bl	printf			@ Display error message
-	b	get_triangle_base	@ Prompt for base length again
+	b	main	@ Prompt for base length again
 
 invalid_dimension_triangle_height:
 	@ Handle invalid height length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	get_triangle_height	@ Prompt for height length again
+	b	main	@ Prompt for height length again
 
 loop_square:
 	@ Square area calculation
@@ -158,7 +158,7 @@ invalid_dimension_square_side:
 	@ Handle invalid side length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	get_square_side		@ Prompt for side length again
+	b	main		@ Prompt for side length again
 
 loop_rect:
 	@ Rectangle area calculation
@@ -213,13 +213,13 @@ invalid_dimension_rectangle_base:
 	@ Handle invalid base length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	get_rectangle_base	@ Prompt for base length again
+	b	main	@ Prompt for base length again
 
 invalid_dimension_rectangle_height:
 	@ Handle invalid height length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	get_rectangle_height	@ Prompt for height length again
+	b	main	@ Prompt for height length again
 
 loop_trap:
 	@ Trapezoid area calculation
@@ -292,19 +292,19 @@ invalid_dimension_trapezoid_base:
 	@ Handle invalid base length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	get_trapezoid_base	@ Prompt for base length again
+	b	main	@ Prompt for base length again
 
 invalid_dimension_trapezoid_upper_base:
 	@ Handle invalid upper base length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	get_trapezoid_upper_base	@ Prompt for upper base length again
+	b	main	@ Prompt for upper base length again
 
 invalid_dimension_trapezoid_height:
 	@ Handle invalid height length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	get_trapezoid_height	@ Prompt for height length again
+	b	main	@ Prompt for height length again
 
 loop_end:
 	@ Prompt user to perform another calculation or exit
