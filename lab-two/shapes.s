@@ -36,10 +36,6 @@ loop:
 	ldr	r1, =int_a
 	bl	scanf
 
-	@ Load it back into r1
-	ldr	r1, =int_a
-	ldr	r1, [r1]
-
 	ldr r0, =format_int
 	ldr r1, =int_a
 	ldr r1, [r1]
