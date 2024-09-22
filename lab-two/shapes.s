@@ -40,6 +40,10 @@ loop:
 	ldr	r1, =int_a
 	ldr	r1, [r1]
 
+	ldr r0, =format_int
+	ldr r1, =int_a
+	bl printf
+
 	@ Triangle?
 	cmp	r1, #1
 	beq	triangle_calc
