@@ -343,7 +343,9 @@ check_input_validity:
 	cmp	r0, #1			@ scanf should return 1 if successful
 	beq	valid_input		@ If equal, input is valid
 	ldr	r0, =invalid_input	@ Load invalid input message
+	push	{lr}			@ Save return address
 	bl	printf			@ Display error message
+	pop		{lr}			@ Restore return address
 	mov	r0, #0			@ Set return value to 0 (invalid)
 	bx	lr			@ Return from subroutine
 
