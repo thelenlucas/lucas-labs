@@ -127,16 +127,6 @@ get_height:
     @ Result is on top of stack
     POP     {r7}            @ Pop result into r7
 
-    @ Check for overflow flag in r8
-    CMP     r8, #0
-    BEQ     print_result_triangle
-
-    @ Overflow occurred
-    LDR     r0, =overflow_msg
-    BL      printf
-    B       continue_prompt
-
-print_result_triangle:
     @ Print the result
     LDR     r0, =result_msg
     MOV     r1, r7
@@ -200,16 +190,6 @@ get_width:
     @ Result is on top of stack
     POP     {r7}            @ Pop result into r7
 
-    @ Check for overflow flag in r8
-    CMP     r8, #0
-    BEQ     print_result_rectangle
-
-    @ Overflow occurred
-    LDR     r0, =overflow_msg
-    BL      printf
-    B       continue_prompt
-
-print_result_rectangle:
     @ Print the result
     LDR     r0, =result_msg
     MOV     r1, r7
@@ -289,16 +269,6 @@ get_height_trap:
     @ Result is on top of stack
     POP     {r4}            @ Pop result into r4
 
-    @ Check for overflow flag in r8
-    CMP     r8, #0
-    BEQ     print_result_trapezoid
-
-    @ Overflow occurred
-    LDR     r0, =overflow_msg
-    BL      printf
-    B       continue_prompt
-
-print_result_trapezoid:
     @ Print the result
     LDR     r0, =result_msg
     MOV     r1, r4
@@ -350,16 +320,6 @@ get_side:
     @ Result is on top of stack
     POP     {r6}            @ Pop result into r6
 
-    @ Check for overflow flag in r8
-    CMP     r8, #0
-    BEQ     print_result_square
-
-    @ Overflow occurred
-    LDR     r0, =overflow_msg
-    BL      printf
-    B       continue_prompt
-
-print_result_square:
     @ Print the result
     LDR     r0, =result_msg
     MOV     r1, r6
@@ -394,81 +354,95 @@ program_exit:
 @ Triangle area calculation
 triangle_area:
     PUSH    {lr}
-    POP     {r10, r11}
+    POP     {r10, r11}    @ Pop operands into r10 and r11
+    @ Multiply base and height
     UMULL   r0, r1, r10, r11
-    MOV     r8, #0
-    TST     r1, r1
+    @ Check if high word (r1) is zero
+    CMP     r1, #0
     BNE     triangle_overflow
+    @ Divide by 2 using logical shift right
     MOV     r2, r0, LSR #1
-    B       triangle_push_result
+    @ Push result onto stack
+    PUSH    {r2}
+    MOV     pc, lr
 
 triangle_overflow:
-    MOV     r8, #1
-    MOV     r2, #0
+    BL      overflow_handler
+    B       triangle_area_exit
 
-triangle_push_result:
-    PUSH    {r2}
-    POP     {pc}
+triangle_area_exit:
+    MOV     pc, lr
 
 @ Rectangle area calculation
 rectangle_area:
     PUSH    {lr}
-    POP     {r10, r11}
+    POP     {r10, r11}    @ Pop operands into r10 and r11
+    @ Multiply length and width
     UMULL   r0, r1, r10, r11
-    MOV     r8, #0
-    TST     r1, r1
+    @ Check if high word (r1) is zero
+    CMP     r1, #0
     BNE     rectangle_overflow
-    MOV     r2, r0
-    B       rectangle_push_result
+    @ Push result onto stack
+    PUSH    {r0}
+    MOV     pc, lr
 
 rectangle_overflow:
-    MOV     r8, #1
-    MOV     r2, #0
+    BL      overflow_handler
+    B       rectangle_area_exit
 
-rectangle_push_result:
-    PUSH    {r2}
-    POP     {pc}
+rectangle_area_exit:
+    MOV     pc, lr
 
 @ Trapezoid area calculation
 trapezoid_area:
     PUSH    {lr}
-    POP     {r10, r11, r12}
-    ADDS    r0, r10, r11
-    BCC     no_add_overflow_trap
-    MOV     r8, #1
-    MOV     r2, #0
-    B       trap_push_result
-
-no_add_overflow_trap:
+    POP     {r10, r11, r12}   @ Pop operands into r10 (base1), r11 (base2), r12 (height)
+    @ Add base1 and base2
+    ADDS    r0, r10, r11      @ r0 = base1 + base2, set flags
+    BVS     trapezoid_overflow
+    @ Multiply (base1 + base2) * height
     UMULL   r0, r1, r0, r12
-    TST     r1, r1
-    BNE     trap_overflow
+    @ Check if high word (r1) is zero
+    CMP     r1, #0
+    BNE     trapezoid_overflow
+    @ Divide by 2
     MOV     r2, r0, LSR #1
-    B       trap_push_result
-
-trap_overflow:
-    MOV     r8, #1
-    MOV     r2, #0
-
-trap_push_result:
+    @ Push result onto stack
     PUSH    {r2}
-    POP     {pc}
+    MOV     pc, lr
+
+trapezoid_overflow:
+    BL      overflow_handler
+    B       trapezoid_area_exit
+
+trapezoid_area_exit:
+    MOV     pc, lr
 
 @ Square area calculation
 square_area:
     PUSH    {lr}
-    POP     {r10}
+    POP     {r10}         @ Pop operand into r10
+    @ Multiply side * side
     UMULL   r0, r1, r10, r10
-    MOV     r8, #0
-    TST     r1, r1
+    @ Check if high word (r1) is zero
+    CMP     r1, #0
     BNE     square_overflow
-    MOV     r2, r0
-    B       square_push_result
+    @ Push result onto stack
+    PUSH    {r0}
+    MOV     pc, lr
 
 square_overflow:
-    MOV     r8, #1
-    MOV     r2, #0
+    BL      overflow_handler
+    B       square_area_exit
 
-square_push_result:
-    PUSH    {r2}
-    POP     {pc}
+square_area_exit:
+    MOV     pc, lr
+
+@ Overflow handler
+overflow_handler:
+    LDR     r0, =overflow_msg
+    BL      printf
+    @ Push zero as result to maintain stack consistency
+    MOV     r0, #0
+    PUSH    {r0}
+    MOV     pc, lr
