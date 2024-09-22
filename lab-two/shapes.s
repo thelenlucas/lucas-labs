@@ -116,4 +116,4 @@ int_a: .word 0
 .balign 4
 int_b: .word 0
 .balign 4
-int_b: .word 0
+int_c: .word 0
