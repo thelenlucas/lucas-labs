@@ -297,6 +297,7 @@ loop_end:
     ldr     r1, =char_input
     bl      scanf
 
+	ldr     r0, =char_input
     ldrb    r0, [char_input]
     cmp     r0, #'Y'
     beq     loop
