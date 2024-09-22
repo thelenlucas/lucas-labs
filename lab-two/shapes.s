@@ -15,7 +15,7 @@ loop:
 	bl	scanf
 
 	@ Grab
-	ldr	r0, =format_int
+	ldr	r0, =int_a
 	ldr r0, [r0]
 
 	@ Triangle
