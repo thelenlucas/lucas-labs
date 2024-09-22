@@ -70,9 +70,7 @@ loop_square:
 
 	@ Hijack rectangle_area for square
 	LDR	r0, =int_a
-	LDR	r1, =int_a
 	LDR	r0, [r0]
-	LDR	r1, [r1]
 	push {r0, r1}
 	BL	rectangle_area
 
