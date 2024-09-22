@@ -307,7 +307,7 @@ invalid_dimension_trapezoid_height:
 	b	get_trapezoid_height	@ Prompt for height length again
 
 loop_end:
-	@ Prompt user to perform another calculation or exit
+	@ Prompt user to perform another calculation or restart
 	ldr	r0, =continue_prompt	@ Load continue prompt message
 	bl	printf
 
@@ -315,7 +315,7 @@ loop_end:
 	ldr	r1, =char_input		@ Address to store user's response
 	bl	scanf
 
-	ldr	r0, =char_input	@ Load address of char_input into r0
+	ldrb	r0, =char_input	@ Load user's response into r0
 	ldrb	r0, [r0]	@ Load user's response into r0
 	cmp	r0, #'Y'		@ Compare with 'Y'
 	beq	loop			@ If 'Y', repeat loop
@@ -326,10 +326,10 @@ loop_end:
 	cmp	r0, #'n'		@ Compare with 'n'
 	beq	exit
 
-	@ If invalid input, display error and prompt again
-	ldr	r0, =invalid_choice
-	bl	printf
-	b	loop_end		@ Prompt user again
+	@ Invalid input, display error and restart program
+	ldr	r0, =invalid_choice	@ Load invalid choice message
+	bl	printf			@ Display error message
+	b	loop			@ Restart from main menu
 
 exit:
 	@ Exit the program gracefully
