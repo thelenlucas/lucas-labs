@@ -42,6 +42,7 @@ loop:
 
 	ldr r0, =format_int
 	ldr r1, =int_a
+	ldr r1, [r1]
 	bl printf
 
 	@ Triangle?
