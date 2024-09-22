@@ -38,7 +38,7 @@ loop:
 
 	@ Load it back into r1
 	ldr	r1, =int_a
-	ldrb	r1, [r1]
+	ldr	r1, [r1]
 
 	@ Triangle?
 	cmp	r1, #1
