@@ -315,7 +315,8 @@ loop_end:
 	ldr	r1, =char_input		@ Address to store user's response
 	bl	scanf
 
-	ldrb	r0, [char_input]	@ Load user's response into r0
+	ldr	r0, =char_input	@ Load address of char_input into r0
+	ldrb	r0, [r0]	@ Load user's response into r0
 	cmp	r0, #'Y'		@ Compare with 'Y'
 	beq	loop			@ If 'Y', repeat loop
 	cmp	r0, #'y'		@ Compare with 'y'
