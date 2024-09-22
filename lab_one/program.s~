@@ -1,0 +1,79 @@
+.global main
+
+main:
+	ldr	r0, =welcome
+	bl	printf
+
+	bl	print_arr
+
+	bl	nline
+
+	mov	r7, #1
+	svc	0
+
+@ Subroutine for easily printing a newline
+nline:
+	push	{lr}
+	ldr	r0, =newline
+	bl	printf
+	pop	{lr}
+	bx	lr
+
+@ Subroutine to print an integer
+print_int:
+	push	{lr}
+	mov	r1, r0
+	ldr	r0, =format_int
+	bl	printf
+	pop	{lr}
+	bx	lr
+
+@ Subroutine to print an array of integers
+@ r0: address to array
+print_arr:
+	push	{lr}
+	ldr	r4, =arr_one	@ r4 is preserved by the printf function
+	mov	r5, #0		@ Same with r5
+print_arr_loop:
+	@ Check if we've reached 10 elements yet
+	cmp	r5, #10
+	bge	print_arr_done
+
+	ldr	r0, [r4], #4	@ Load and post-index to increment
+	bl	print_int
+
+	@ Print comma
+	cmp	r5, #10
+	bgt	print_com
+
+	add	r5, r5, #1	@ Inc number of elements read
+
+	b	print_arr_loop
+print_arr_done:
+	bl	nline		@ Print newline to flush buffer
+	pop	{lr}
+	bx	lr
+
+@ Subroutine to print a comma, usefule for determining if we're at the end of an array
+print_com:
+	push	{lr}
+	ldr	r0, =comma
+	bl	printf
+	pop	{lr}
+	bx	lr
+
+.data
+.balign 4
+welcome: .asciz "Welcome to the array printer!\nPlease input a negative, positive, or zero-valued integer.\n"
+
+.balign 4
+newline: .asciz "\n"
+
+.balign 4
+format_int:	.asciz "%d"
+
+.balign 4
+comma:		.asciz ", "
+
+.balign 4
+arr_one:	.word 1, 2, 3, 4, 5, 6, 7, 8, 9, 10

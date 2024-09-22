@@ -1,0 +1,200 @@
+.global main
+
+main:
+	ldr	r0, =welcome
+	bl	printf
+
+	@ Get user input back
+	ldr	r0, =format_int
+	ldr	r1, =user_input
+	bl	scanf
+
+	@ Print array one
+	ldr	r0, =welcome_two
+	bl	printf
+	ldr	r0, =arr_one
+	bl	print_arr
+
+	@ Print array two
+	ldr	r0, =welcome_three
+	bl	printf
+	ldr	r0, =arr_two
+	bl	print_arr
+
+	@ Sum the arrays, and display the third
+	ldr	r0, = welcome_four
+	bl	printf
+
+	ldr	r0, =arr_one
+	ldr	r1, =arr_two
+	ldr	r2, =arr_three
+
+	bl	sum_arrays
+
+	@ Print third
+	ldr	r0, =welcome_five
+	bl	printf
+	ldr	r0, =arr_three
+	bl	print_arr
+
+	@ Print filter
+	ldr	r1, =user_input
+	ldr	r1, [r1]
+	ldr	r0, =arr_three
+	bl	filter_arr
+
+	mov	r7, #1
+	svc	0
+
+@ Subroutine that adds two arrays together
+@ r0: First array address
+@ r1: Second array address
+@ r2: Third array address (destination)
+sum_arrays:
+	mov	r5, #0
+sum_arrays_loop:
+	cmp	r5, #10		@ Are we done yet?
+	bge 	sum_arrays_done	@ If so, exit back
+
+	@ r3 will hold r0[i]
+	@ r4 will hold r1[i]
+	ldr	r3, [r0], #4	@ Post-index all of these to incriment
+	ldr	r4, [r1], #4
+
+	add	r4, r3, r4	@ Sum together
+
+	str	r4, [r2], #4	@ Store and incr.
+
+	add	r5, r5, #1	@ Incr. count
+	b	sum_arrays_loop	@ Loop
+sum_arrays_done:
+	bx	lr
+
+@ Subroutine for easily printing a newline
+nline:
+	push	{lr}
+	ldr	r0, =newline
+	bl	printf
+	pop	{lr}
+	bx	lr
+
+@ Subroutine to print an integer
+print_int:
+	push	{lr}
+	mov	r1, r0
+	ldr	r0, =format_int
+	bl	printf
+	pop	{lr}
+	bx	lr
+
+@ Subroutine to print an array of integers
+@ r0: address to array
+print_arr:
+	push	{lr}
+	mov	r4, r0		@ r4 is preserved by the printf function
+	mov	r5, #0		@ Same with r5
+print_arr_loop:
+	@ Check if we've reached 10 elements yet
+	cmp	r5, #10
+	bge	print_arr_done
+
+	ldr	r0, [r4], #4	@ Load and post-index to increment
+	bl	print_int
+
+	@ Print comma
+	bl	print_com
+
+	add	r5, r5, #1	@ Inc number of elements read
+
+	b	print_arr_loop
+print_arr_done:
+	ldr	r0, =backspace	@ Clear the last ,
+	bl	printf		
+	bl	nline		@ Print newline to flush buffer
+	pop	{lr}
+	bx	lr
+
+@ Subroutine to print a comma, usefule for determining if we're at the end of an array
+print_com:
+	push	{lr}
+	ldr	r0, =comma
+	bl	printf
+	pop	{lr}
+	bx	lr
+
+
+@ Subroutine to print an array of integers, filtering by the polarity of another integer
+@ r0: Address of array to print
+@ r1: Filter integer value
+filter_arr:
+	mov	r4, r0	@ We're going to be using printf, so shove this off
+	mov	r5, r1  @ Same here, keep the integer value safe
+	mov	r6, #0	@ We'll use this to count through the array
+
+	push 	{lr}	@ Save the link register, we'll be calling other subroutines
+filter_arr_loop_start:
+	@ check if we've hit 10 elements yet
+	cmp	r6, #10
+	bge	filter_arr_end
+
+	ldr	r0, [r4], #4	@ Load, post-index by four to next element
+	
+	@ First case is easy, if r5 is zero
+	cmp	r5, #0
+	beq	filter_arr_zero_case
+
+	@ If it's not zero, we haven't branched, and now we can check if they have the same sign
+	lsr	r6, r0, #31	@ Isolate sign bit with logical shift
+	lsr	r5, r5, #31
+	cmp	r6, r5		@ Compare the sign bit
+	
+	beq	filter_arr_same_sign	@ Go and print
+	bne	filter_arr_loop_end	@ Don't print, skip to end
+filter_arr_zero_case:
+	cmp	r0, #0		@ Is our current value zero? We know the polarity integer was
+	beq	filter_arr_same_sign	@ If so, print it
+	bne	filter_arr_loop_end	@ Otherwise, skip
+filter_arr_same_sign:
+	@ Print the value, then print the comma seperator
+	bl	print_int
+	bl	print_com
+filter_arr_loop_end:
+	@ Inc. number of elements iterated over
+	add	r6, r6, #1
+	b	filter_arr_loop_start	@ Loop
+filter_arr_end:
+	@ Backspace to clear last comma
+	bl	nline
+
+	@ Return
+	pop	{lr}
+	bx	lr
+
+
+.data
+.balign 4
+welcome:	.asciz "Welcome to the array printer!\nPlease input a negative, positive, or zero-valued integer: "
+welcome_two:	.asciz "Array One: "
+welcome_three:	.asciz "Array Two: "
+welcome_four:	.asciz "Adding numbers...\n"
+welcome_five:	.asciz "Sum of Arrays One and Two (Array Three): "
+
+.balign 4
+newline:	.asciz "\n"
+
+.balign 4
+format_int:	.asciz "%d"	@ Generic int formatter
+
+.balign 4
+comma:		.asciz ", "
+
+.balign 4
+backspace:	.asciz "\b\b  \b\b"
+
+.balign 4
+user_input:	.word 4		@ User input
+
+.balign 4
+arr_one:	.word 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+arr_two:	.word -10, -9, -8, -7, -6, -5, -4, -3, -2, -1
+arr_three:	.space 40	@ Space for enough integers
