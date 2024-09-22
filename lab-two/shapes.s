@@ -44,7 +44,6 @@ loop_triangle:
 	LDR	r1, [r1]
 	push {r0, r1}
 	BL	triangle_area
-	
 
 	@ Print result
 	POP {r1}
@@ -85,7 +84,7 @@ triangle_area:
 	bl printf
 
 	@ Calculate area
-	mul r0, r10, r11
+	smul r0, r10, r11
 
 	@ Check for overflow
 	bvs tri_calc_overflow
