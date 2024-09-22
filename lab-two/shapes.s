@@ -315,6 +315,15 @@ loop_end:
 	ldr	r1, =char_input		@ Address to store user's response
 	bl	scanf
 
+loop_clear_buffer:
+    ldr     r0, =format_char        @ Format string to read a single character
+    ldr     r1, =char_input         @ Temporary storage for character
+    bl      scanf                   @ Read one character
+    ldr     r0, =char_input
+    ldrb    r2, [r0]                @ Load the character into r2
+    cmp     r2, #10                 @ ASCII value of newline character
+    bne     loop_clear_buffer       @ If not newline, keep reading
+
 	ldr		r0, =char_input
 	ldrb	r0, [r0]	@ Load user's response into r0
 	cmp	r0, #'Y'		@ Compare with 'Y'
