@@ -71,8 +71,7 @@ format_int:	.asciz "%d\n"	@ Generic formatter for integers
 format_char:	.asciz "%c\n"	@ Generic formatter for chars
 .balign	4
 overflow_message:	.asciz "Overflow reported!\n"
-.balign	
-buffer:		.space	4	@ Buffer space
+.balign 4
 int_a:		.space	4
 int_b:		.space	4
 int_c:		.space	4
