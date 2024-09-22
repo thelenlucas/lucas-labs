@@ -22,9 +22,13 @@ loop:
 	cmp	r0, #1
 	beq loop_triangle
 
+	@ Square
+	cmp	r0, #2
+	beq loop_square
+
 	@ Rectangle
 	cmp	r0, #3
-	beq loop_square
+	beq loop_rect
 
 loop_triangle:
 	@ Get base
@@ -57,6 +61,29 @@ loop_triangle:
 	B	loop_end
 
 loop_square:
+	@ Get side
+	LDR	r0, =base_string
+	BL	printf
+	LDR	r0, =format_int
+	LDR	r1, =int_a
+	BL	scanf
+
+	@ Hijack rectangle_area for square
+	LDR	r0, =int_a
+	LDR	r1, =int_a
+	LDR	r0, [r0]
+	LDR	r1, [r1]
+	push {r0, r1}
+	BL	rectangle_area
+
+	@ Print result
+	POP {r1}
+	LDR	r0, =print_area
+	BL	printf
+
+	B	loop_end
+
+loop_rect:
 	@ Get side
 	LDR	r0, =base_string
 	BL	printf
