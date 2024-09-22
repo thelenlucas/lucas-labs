@@ -23,6 +23,9 @@ main:
 	b	loop
 
 input_error:
+	@ Error message
+	ldr	r0, =bad_input_msg
+	bl	printf
 	b	loop
 
 loop:
@@ -35,24 +38,8 @@ loop:
 	ldr	r1, =buffer
 	ldrb	r1, [r1]
 
-	@ Check against triangle
-	mov	r0, #84		@ ASCII 'T'
-	cmp	r0, r1
-	beq	triangle_calc
-
-	@ Check for rectangle
-	mov	r0, #82		@ ASCII 'R'
-	cmp	r0, r1
-	beq	rectangle_calc
-
-	@ Check for square
-	mov	r0, #83		@ ASCII 'S'
-	cmp	r0, r1
-	beq	square_calc
-
-	@ Check for quadrilateral
-	mov	r0, #81		@ ASCII 'Q'
-	cmp	r0, r1
+	@ Triangle?
+	cmp	r1, #1
 	beq	quad_calc
 
 	@ If we didn't hit any of those conditions, we need to show error and try again
@@ -210,9 +197,11 @@ int_b:		.space	4
 int_c:		.space	4
 
 .balign	4
-welcome_message:	.asciz "Welcome to the shape calculator!\nPlease enter your shape!\nTriangle: `T`\nSquare: `S`\nRectangle: `R`\nTrapezoid: `T`\n\n"
+welcome_message:	.asciz "Welcome to the shape calculator!\nPlease enter your shape(1-4):`\n\n1: Triangle\n2: Rectangle\n3: Square\n4: Quadrilateral\n"
 .balign 4
-request_entry:		.asciz "%c"	@ Also used to scan in the char
+bad_input_msg:		.asciz "Invalid input. Please try again.\n"
+.balign 4
+request_entry:		.asciz "Entry: %d"	@ Also used to scan in the char
 .balign 4
 base_string:		.asciz	"Enter base of shape: %d"
 .balign 4
