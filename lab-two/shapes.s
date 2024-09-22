@@ -74,7 +74,7 @@ triangle_area:
 	push {lr}
 
 	@ Calculate area
-	smull r0, r1, r10, r11
+	smull r1, r0, r10, r11
 	CMP r0, r1, ASR #31
 	bne tri_calc_overflow
 
