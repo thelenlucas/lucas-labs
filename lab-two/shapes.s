@@ -342,20 +342,21 @@ check_input_validity:
     cmp     r0, #1                  @ scanf should return 1 if successful
     beq     valid_input             @ If equal, input is valid
 
-    @ Invalid input detected, clear the input buffer
+    @ Invalid input detected, display error message
     push    {lr}                    @ Save return address
-    ldr     r0, =format_char        @ Format string to read a single character
+    ldr     r0, =invalid_input      @ Load invalid input message
+    bl      printf                  @ Display error message
+
+    @ Now clear the input buffer
 clear_buffer_loop:
+    ldr     r0, =format_char        @ Format string to read a single character
     ldr     r1, =char_input         @ Temporary storage for character
     bl      scanf                   @ Read one character
     ldr     r0, =char_input
     ldrb    r2, [r0]                @ Load the character into r2
-    cmp     r2, #'\n'               @ Check if character is newline
-    beq     buffer_cleared          @ If newline, buffer is cleared
-    b       clear_buffer_loop       @ Otherwise, keep reading
-buffer_cleared:
-    ldr     r0, =invalid_input      @ Load invalid input message
-    bl      printf                  @ Display error message
+    cmp     r2, #10                 @ ASCII value of newline character
+    bne     clear_buffer_loop       @ If not newline, keep reading
+    @ Else, buffer is cleared
     pop     {lr}                    @ Restore return address
     mov     r0, #0                  @ Set return value to 0 (invalid)
     bx      lr                      @ Return from subroutine
@@ -383,7 +384,7 @@ triangle_area:
 	@ Calculate area = (base * height) / 2
 	smull	r2, r3, r10, r11	@ Multiply base and height, result in r2 (low), r3 (high)
 
-	@ Check for multiplication overflow
+	@ Check for multiplication overflowx
 	cmp	r3, #0			@ If high part of result is not zero, overflow occurred
 	bne	tri_calc_overflow
 
@@ -492,7 +493,7 @@ continue_prompt:                .asciz "Do you want to perform another calculati
 .balign 4
 format_int:                     .asciz "%d"
 .balign 4
-format_char:                    .asciz " %c"
+format_char:                    .asciz "%c"
 .balign 4
 int_a:                          .word 0
 .balign 4
