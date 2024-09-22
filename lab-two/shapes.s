@@ -298,7 +298,7 @@ loop_end:
     bl      scanf
 
 	ldr     r0, =char_input
-    ldrb    r0, [char_input]
+    ldrb    r0, [r0]
     cmp     r0, #'Y'
     beq     loop
     cmp     r0, #'y'
