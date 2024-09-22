@@ -114,13 +114,13 @@ invalid_dimension_triangle_base:
 	@ Handle invalid base length input
 	ldr	r0, =invalid_dimension	@ Load invalid dimension message
 	bl	printf			@ Display error message
-	b	main	@ Prompt for base length again
+	b	main	@ Restart
 
 invalid_dimension_triangle_height:
 	@ Handle invalid height length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	main	@ Prompt for height length again
+	b	main	@ Restart
 
 loop_square:
 	@ Square area calculation
@@ -213,13 +213,13 @@ invalid_dimension_rectangle_base:
 	@ Handle invalid base length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	main	@ Prompt for base length again
+	b	main	@ Restart
 
 invalid_dimension_rectangle_height:
 	@ Handle invalid height length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	main	@ Prompt for height length again
+	b	main	@ Restart
 
 loop_trap:
 	@ Trapezoid area calculation
@@ -292,19 +292,19 @@ invalid_dimension_trapezoid_base:
 	@ Handle invalid base length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	main	@ Prompt for base length again
+	b	main	@ Restart
 
 invalid_dimension_trapezoid_upper_base:
 	@ Handle invalid upper base length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	main	@ Prompt for upper base length again
+	b	main	@ Restart
 
 invalid_dimension_trapezoid_height:
 	@ Handle invalid height length input
 	ldr	r0, =invalid_dimension
 	bl	printf
-	b	main	@ Prompt for height length again
+	b	main	@ Restart
 
 loop_end:
 	@ Prompt user to perform another calculation or exit
@@ -337,8 +337,7 @@ exit:
 	svc	0			@ Make system call to exit
 
 @ Subroutine to check input validity
-@ Validates the result of scanf
-@ Returns r0 = 1 if valid, 0 if invalid
+@ Validates the result of scanf, otherwise restarts the program
 check_input_validity:
 	cmp	r0, #1			@ scanf should return 1 if successful
 	beq	valid_input		@ If equal, input is valid
@@ -347,7 +346,7 @@ check_input_validity:
 	bl	printf			@ Display error message
 	pop		{lr}			@ Restore return address
 	mov	r0, #0			@ Set return value to 0 (invalid)
-	bx	lr			@ Return from subroutine
+	b	main			@ Restart from the very beginning
 
 valid_input:
 	mov	r0, #1			@ Set return value to 1 (valid)
