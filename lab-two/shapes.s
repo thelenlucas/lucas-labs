@@ -1,15 +1,3 @@
-@ ------------------------------------------------------------
-@ LAB ONE: Shape Calculator
-@
-@ AUTHOR: LUCAS THELEN
-@
-@ PURPOSE: Request user input to calculate the area of a chosen shape
-@
-@ COMPILE AND RUN: 
-@ `as -o shapes.o shapes && gcc -o program shapes.o`
-@ ./program
-@ ------------------------------------------------------------
-
 .global main
 
 main:
@@ -307,7 +295,7 @@ invalid_dimension_trapezoid_height:
 	b	get_trapezoid_height	@ Prompt for height length again
 
 loop_end:
-	@ Prompt user to perform another calculation or restart
+	@ Prompt user to perform another calculation or exit
 	ldr	r0, =continue_prompt	@ Load continue prompt message
 	bl	printf
 
@@ -315,7 +303,7 @@ loop_end:
 	ldr	r1, =char_input		@ Address to store user's response
 	bl	scanf
 
-	ldrb	r0, =char_input	@ Load user's response into r0
+	ldr		r0, =char_input
 	ldrb	r0, [r0]	@ Load user's response into r0
 	cmp	r0, #'Y'		@ Compare with 'Y'
 	beq	loop			@ If 'Y', repeat loop
@@ -326,10 +314,10 @@ loop_end:
 	cmp	r0, #'n'		@ Compare with 'n'
 	beq	exit
 
-	@ Invalid input, display error and restart program
+	@ Invalid input, display error and restart program from main
 	ldr	r0, =invalid_choice	@ Load invalid choice message
 	bl	printf			@ Display error message
-	b	loop			@ Restart from main menu
+	b	main			@ Restart from the very beginning
 
 exit:
 	@ Exit the program gracefully
@@ -448,43 +436,4 @@ trap_calc_end:
 	pop	{lr}			@ Restore return address
 	push	{r4}			@ Push the area result onto the stack
 	bx	lr			@ Return from subroutine
-
-.data
-.balign 4
-welcome:                        .asciz "Welcome!\n"
-.balign 4
-choices:                        .asciz "Please choose a shape:\nTriangle (1)\nSquare (2)\nRectangle (3)\nTrapezoid (4)\n"
-.balign 4
-enter_choice:                   .asciz "Enter your choice: "
-.balign 4
-base_string:                    .asciz "Please enter the base length: "
-.balign 4
-height_string:                  .asciz "Please enter the height length: "
-.balign 4
-upper_base_string:              .asciz "Please enter the upper base length: "
-.balign 4
-side_string:                    .asciz "Please enter the side length: "
-.balign 4
-overflow_result:                .asciz "Overflow detected.\n"
-.balign 4
-print_area:                     .asciz "The area is: %d!\n"
-.balign 4
-invalid_input:                  .asciz "Invalid input. Please enter a valid integer.\n"
-.balign 4
-invalid_dimension:              .asciz "Invalid input. Please enter a positive integer.\n"
-.balign 4
-invalid_choice:                 .asciz "Invalid choice. Please try again.\n"
-.balign 4
-continue_prompt:                .asciz "Do you want to perform another calculation? (Y/N): "
-.balign 4
-format_int:                     .asciz "%d"
-.balign 4
-format_char:                    .asciz " %c"
-.balign 4
-int_a:                          .word 0
-.balign 4
-int_b:                          .word 0
-.balign 4
-int_c:                          .word 0
-.balign 4
-char_input:                     .byte 0
+ 
