@@ -102,7 +102,7 @@ choices: .asciz "Please choose a shape:\nTriangle (1)\nSquare (2)\nRectangle (3)
 .balign 4
 base_string: .asciz "Please enter a base length: "
 .balign 4
-height_string: .asciz "Please enter a height length"
+height_string: .asciz "Please enter a height length: "
 .balign 4
 overflow_result: .asciz "Overflow detected\n"
 
