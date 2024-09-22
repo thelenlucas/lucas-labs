@@ -42,7 +42,9 @@ loop_triangle:
 	LDR	r1, =int_b
 	LDR	r0, [r0]
 	LDR	r1, [r1]
+	push {r0, r1}
 	BL	triangle_area
+	
 
 	@ Print result
 	POP {r1}
