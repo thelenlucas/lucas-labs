@@ -22,6 +22,10 @@ loop:
 	cmp	r0, #1
 	beq loop_triangle
 
+	@ Rectangle
+	cmp	r0, #3
+	beq loop_square
+
 loop_triangle:
 	@ Get base
 	LDR	r0, =base_string
@@ -47,14 +51,36 @@ loop_triangle:
 
 	@ Print result
 	POP {r1}
+	LDR	r0, =print_area
+	BL	printf
 
-	LDR	r0, =print_int
+	B	loop_end
+
+loop_square:
+	@ Get side
+	LDR	r0, =base_string
+	BL	printf
+	LDR	r0, =format_int
+	LDR	r1, =int_a
+	BL	scanf
+
+	@ Pass side to rectangle_area
+	LDR	r0, =int_a
+	LDR	r1, =int_a
+	LDR	r0, [r0]
+	LDR	r1, [r1]
+	push {r0, r1}
+	BL	rectangle_area
+
+	@ Print result
+	POP {r1}
+	LDR	r0, =print_area
 	BL	printf
 
 	B	loop_end
 
 loop_end:
-	B	exit
+	B	loop
 
 @ Simple subroutine to print an overflow message
 overflow:
@@ -87,6 +113,37 @@ tri_calc_overflow:
 	b tri_calc_end
 
 tri_calc_end:
+	@ Divide by 2, using asr
+	asr r0, r0, #1
+
+	@ Get link back
+	pop {lr}
+	@ Push result to stack
+	push {r0}
+	bx lr
+
+@ Rectangle area calculation
+rectangle_area:
+	@ Inputs are on stack, pop them to r10 and r11
+	pop {r10, r11}
+
+	@ Preserve lr
+	push {lr}
+
+	@ Calculate area
+	smull r0, r1, r10, r11
+	
+	@ Check for overflow,
+	cmp r1, #0
+	bne rect_calc_overflow
+
+	b rect_calc_end
+
+rect_calc_overflow:
+	bl overflow
+	b rect_calc_end
+
+rect_calc_end:
 	@ Get link back
 	pop {lr}
 	@ Push result to stack
@@ -108,6 +165,8 @@ base_string: .asciz "Please enter a base length: "
 height_string: .asciz "Please enter a height length: "
 .balign 4
 overflow_result: .asciz "Overflow detected\n"
+.balign 4
+print_area: .asciz "The area is: %d!\n"
 
 .balign 4
 format_int: .asciz "%d" @ Generic integer format
