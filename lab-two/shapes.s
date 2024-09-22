@@ -73,21 +73,11 @@ triangle_area:
 	@ Preserve lr
 	push {lr}
 
-	@ Print w
-	mov r1, r10
-	ldr r0, =print_int
-	bl printf
-
-	@ Print h
-	mov r1, r11
-	ldr r0, =print_int
-	bl printf
-
 	@ Calculate area
-	smul r0, r10, r11
+	smul r0, r1, r10, r11
+	CMP r0, r1, ASR #31
+	bne tri_calc_overflow
 
-	@ Check for overflow
-	bvs tri_calc_overflow
 	b tri_calc_end
 
 tri_calc_overflow:
