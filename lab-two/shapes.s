@@ -81,13 +81,13 @@ get_triangle_height:
     @ Pass base and height to triangle_area
     ldr     r0, =int_a
     ldr     r1, =int_b
-    ldr     r0, [r0]
-    ldr     r1, [r1]
-    push    {r0, r1}
+    ldr     r2, [r0]
+    ldr     r3, [r1]
+    push    {r2, r3}
     bl      triangle_area
 
     @ Print result
-    pop     {r1}
+    pop     {r1}        @ Pop result into r1 for printf
     ldr     r0, =print_area
     bl      printf
 
@@ -118,17 +118,17 @@ get_square_side:
 
     @ Check for positive integer
     ldr     r0, =int_a
-    ldr     r0, [r0]
-    cmp     r0, #1
+    ldr     r2, [r0]
+    cmp     r2, #1
     blt     invalid_dimension_square_side
 
     @ Use rectangle_area for square
-    mov     r1, r0
-    push    {r0, r1}
+    mov     r3, r2
+    push    {r2, r3}
     bl      rectangle_area
 
     @ Print result
-    pop     {r1}
+    pop     {r1}        @ Pop result into r1 for printf
     ldr     r0, =print_area
     bl      printf
 
@@ -154,8 +154,8 @@ get_rectangle_base:
 
     @ Check for positive integer
     ldr     r0, =int_a
-    ldr     r0, [r0]
-    cmp     r0, #1
+    ldr     r2, [r0]
+    cmp     r2, #1
     blt     invalid_dimension_rectangle_base
 
     @ Get height with validation
@@ -172,20 +172,16 @@ get_rectangle_height:
 
     @ Check for positive integer
     ldr     r0, =int_b
-    ldr     r0, [r0]
-    cmp     r0, #1
+    ldr     r3, [r0]
+    cmp     r3, #1
     blt     invalid_dimension_rectangle_height
 
     @ Pass base and height to rectangle_area
-    ldr     r0, =int_a
-    ldr     r1, =int_b
-    ldr     r0, [r0]
-    ldr     r1, [r1]
-    push    {r0, r1}
+    push    {r2, r3}
     bl      rectangle_area
 
     @ Print result
-    pop     {r1}
+    pop     {r1}        @ Pop result into r1 for printf
     ldr     r0, =print_area
     bl      printf
 
@@ -216,8 +212,8 @@ get_trapezoid_base:
 
     @ Check for positive integer
     ldr     r0, =int_a
-    ldr     r0, [r0]
-    cmp     r0, #1
+    ldr     r2, [r0]
+    cmp     r2, #1
     blt     invalid_dimension_trapezoid_base
 
     @ Get upper base with validation
@@ -234,8 +230,8 @@ get_trapezoid_upper_base:
 
     @ Check for positive integer
     ldr     r0, =int_b
-    ldr     r0, [r0]
-    cmp     r0, #1
+    ldr     r3, [r0]
+    cmp     r3, #1
     blt     invalid_dimension_trapezoid_upper_base
 
     @ Get height with validation
@@ -252,22 +248,16 @@ get_trapezoid_height:
 
     @ Check for positive integer
     ldr     r0, =int_c
-    ldr     r0, [r0]
-    cmp     r0, #1
+    ldr     r4, [r0]
+    cmp     r4, #1
     blt     invalid_dimension_trapezoid_height
 
     @ Pass bases and height to trapezoid_area
-    ldr     r0, =int_a
-    ldr     r1, =int_b
-    ldr     r2, =int_c
-    ldr     r0, [r0]
-    ldr     r1, [r1]
-    ldr     r2, [r2]
-    push    {r0, r1, r2}
+    push    {r2, r3, r4}
     bl      trapezoid_area
 
     @ Print result
-    pop     {r1}
+    pop     {r1}        @ Pop result into r1 for printf
     ldr     r0, =print_area
     bl      printf
 
@@ -349,10 +339,10 @@ triangle_area:
     push    {lr}
 
     @ Calculate area
-    smull   r0, r1, r10, r11
+    smull   r2, r3, r10, r11
 
     @ Check for overflow
-    cmp     r1, #0
+    cmp     r3, #0
     bne     tri_calc_overflow
 
     b       tri_calc_end
@@ -363,12 +353,12 @@ tri_calc_overflow:
 
 tri_calc_end:
     @ Divide by 2 using asr
-    asr     r0, r0, #1
+    asr     r2, r2, #1
 
     @ Restore lr
     pop     {lr}
     @ Push result to stack
-    push    {r0}
+    push    {r2}
     bx      lr
 
 @ Rectangle area calculation
@@ -380,10 +370,10 @@ rectangle_area:
     push    {lr}
 
     @ Calculate area
-    smull   r0, r1, r10, r11
+    smull   r2, r3, r10, r11
 
     @ Check for overflow
-    cmp     r1, #0
+    cmp     r3, #0
     bne     rect_calc_overflow
 
     b       rect_calc_end
@@ -396,7 +386,7 @@ rect_calc_end:
     @ Restore lr
     pop     {lr}
     @ Push result to stack
-    push    {r0}
+    push    {r2}
     bx      lr
 
 @ Trapezoid area calculation
@@ -409,7 +399,7 @@ trapezoid_area:
     push    {lr}
 
     @ Add the bases
-    add     r0, r10, r11
+    add     r2, r10, r11
     bvs     trap_add_overflow
     b       trap_mul
 
@@ -418,10 +408,10 @@ trap_add_overflow:
     b       trap_calc_end
 
 trap_mul:
-    smull   r0, r1, r0, r12
+    smull   r4, r5, r2, r12   @ Multiply sum of bases (r2) with height (r12)
 
     @ Check for overflow
-    cmp     r1, #0
+    cmp     r5, #0
     bne     trap_calc_overflow
 
     b       trap_calc_end
@@ -432,12 +422,12 @@ trap_calc_overflow:
 
 trap_calc_end:
     @ Divide by 2 using asr
-    asr     r0, r0, #1
+    asr     r4, r4, #1
 
     @ Restore lr
     pop     {lr}
     @ Push result to stack
-    push    {r0}
+    push    {r4}
     bx      lr
 
 .data
