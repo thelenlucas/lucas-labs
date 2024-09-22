@@ -72,6 +72,16 @@ triangle_area:
 	@ Preserve lr
 	push {lr}
 
+	@ Print w
+	mov r1, r10
+	ldr r0, =print_int
+	bl printf
+
+	@ Print h
+	mov r1, r11
+	ldr r0, =print_int
+	bl printf
+
 	@ Calculate area
 	mul r0, r10, r11
 
