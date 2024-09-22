@@ -51,7 +51,7 @@ loop:
 
 triangle_calc:
 	LDR	r0, =triangle_str
-	LDR r1, #99
+	MOV r1, #99
 	BL	printf
 
 	BX	lr
