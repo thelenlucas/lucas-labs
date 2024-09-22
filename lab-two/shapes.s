@@ -433,7 +433,7 @@ rect_calc_overflow:
 
 rect_calc_end:
 	pop	{lr}			@ Restore return address
-	push	{r2}			@ Push the area result onto the stack
+	push	{r1}			@ Push the area result onto the stack
 	bx	lr			@ Return from subroutine
 
 @ Trapezoid area calculation subroutine
