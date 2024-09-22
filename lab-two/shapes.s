@@ -199,6 +199,8 @@ get_rectangle_height:
 	blt	invalid_dimension_rectangle_height
 
 	@ Call rectangle_area subroutine
+	ldr	r2,	=int_a		@ Load base length into r2
+	ldr	r2, [r2]
 	push	{r2, r3}		@ Push base and height onto the stack
 	bl	rectangle_area
 
