@@ -45,7 +45,7 @@ loop_triangle:
 	BL	triangle_area
 
 	@ Print result
-	POP {r0}
+	POP {r1}
 
 	LDR	r0, =print_int
 	BL	printf
