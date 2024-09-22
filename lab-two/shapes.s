@@ -10,6 +10,14 @@ main:
 	bl	scanf
 
 	@ Print user input
+	ldr	r0, =print_int
+	ldr	r1, =int_a
+	ldr	r1, [r1]
+	bl	printf
+
+exit:
+	mov	r7, #1
+	svc	0
 
 .data
 .balign 4
@@ -17,6 +25,8 @@ welcome: .asciz "Welcome! Please choose a shape:\nTriangle (1)\nSquare (2)\nRect
 
 .balign 4
 format_int: .asciz "%d" @ Generic integer format
+.balign 4
+print_int: .asciz "%d\n" @ Integer format
 
 .balign 4
 int_a: .word 0
