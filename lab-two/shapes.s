@@ -339,18 +339,30 @@ exit:
 @ Subroutine to check input validity
 @ Validates the result of scanf, otherwise restarts the program
 check_input_validity:
-	cmp	r0, #1			@ scanf should return 1 if successful
-	beq	valid_input		@ If equal, input is valid
-	ldr	r0, =invalid_input	@ Load invalid input message
-	push	{lr}			@ Save return address
-	bl	printf			@ Display error message
-	pop		{lr}			@ Restore return address
-	mov	r0, #0			@ Set return value to 0 (invalid)
-	b	main			@ Restart from the very beginning
+    cmp     r0, #1                  @ scanf should return 1 if successful
+    beq     valid_input             @ If equal, input is valid
+
+    @ Invalid input detected, clear the input buffer
+    push    {lr}                    @ Save return address
+    ldr     r0, =format_char        @ Format string to read a single character
+clear_buffer_loop:
+    ldr     r1, =char_input         @ Temporary storage for character
+    bl      scanf                   @ Read one character
+    ldr     r0, =char_input
+    ldrb    r2, [r0]                @ Load the character into r2
+    cmp     r2, #'\n'               @ Check if character is newline
+    beq     buffer_cleared          @ If newline, buffer is cleared
+    b       clear_buffer_loop       @ Otherwise, keep reading
+buffer_cleared:
+    ldr     r0, =invalid_input      @ Load invalid input message
+    bl      printf                  @ Display error message
+    pop     {lr}                    @ Restore return address
+    mov     r0, #0                  @ Set return value to 0 (invalid)
+    bx      lr                      @ Return from subroutine
 
 valid_input:
-	mov	r0, #1			@ Set return value to 1 (valid)
-	bx	lr			@ Return from subroutine
+    mov     r0, #1                  @ Set return value to 1 (valid)
+    bx      lr                      @ Return from subroutine
 
 @ Subroutine to print an overflow message
 overflow:
