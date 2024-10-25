@@ -417,4 +417,17 @@ format_char: .asciz " %c"
 in_char: .space 1
 
 .align 2
-int_gum_ptr
+int_gum_ptr: .word int_gum
+int_gum: .word 2
+
+.align 2
+int_peanuts_ptr: .word int_peanuts
+int_peanuts: .word 2
+
+.align 2
+int_crackers_ptr: .word int_crackers
+int_crackers: .word 2
+
+.align 2
+int_mnms_ptr: .word int_mnms
+int_mnms: .word 2
