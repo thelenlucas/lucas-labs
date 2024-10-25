@@ -4,6 +4,10 @@
 .globl scanf
 .globl getchar
 
+exit_long:
+    ldr r0, =exit
+    bx r0
+
 main:
     push {lr}
 
@@ -306,10 +310,6 @@ dollar_loop:
 
 end_compute_dollars_cents:
     pop {pc}      @ Return from subroutine
-
-exit_long:
-    ldr r0, =exit
-    bx r0
 
 exit:
     @ Print message
