@@ -1,8 +1,8 @@
 .thumb
-.global main
-.global printf
-.global scanf
-.global getchar
+.globl main
+.globl printf
+.globl scanf
+.globl getchar
 
 main:
     push {lr}
@@ -18,13 +18,13 @@ loop:
     ldr r2, [r1]
     ldr r1, =int_peanuts_ptr
     ldr r3, [r1]
-    adds r2, r2, r3
+    ADD r2, r2, r3
     ldr r1, =int_crackers_ptr
     ldr r3, [r1]
-    adds r2, r2, r3
+    ADD r2, r2, r3
     ldr r1, =int_mnms_ptr
     ldr r3, [r1]
-    adds r2, r2, r3
+    ADD r2, r2, r3
 
     cmp r2, #0
     ble exit
@@ -117,7 +117,7 @@ gum:
     @ Subtract one from the inventory of gum
     ldr r0, =int_gum_ptr
     ldr r1, [r0]
-    subs r1, r1, #1
+    SUB r1, r1, #1
     str r1, [r0]
 
     b loop
@@ -142,7 +142,7 @@ peanuts:
     @ Subtract one from the inventory
     ldr r0, =int_peanuts_ptr
     ldr r1, [r0]
-    subs r1, r1, #1
+    SUB r1, r1, #1
     str r1, [r0]
 
     b loop
@@ -167,7 +167,7 @@ crackers:
     @ Subtract one from the inventory
     ldr r0, =int_crackers_ptr
     ldr r1, [r0]
-    subs r1, r1, #1
+    SUB r1, r1, #1
     str r1, [r0]
 
     b loop
@@ -192,7 +192,7 @@ mnms:
     @ Subtract one from the inventory
     ldr r0, =int_mnms_ptr
     ldr r1, [r0]
-    subs r1, r1, #1
+    SUB r1, r1, #1
     str r1, [r0]
 
     b loop
@@ -232,15 +232,15 @@ payment_loop:
     b bad_payment
 
 payment_dollar:
-    subs r1, r1, #100    @ Subtract $1.00 (100 cents)
+    SUB r1, r1, #100    @ Subtract $1.00 (100 cents)
     b payment_end_loop
 
 payment_quarter:
-    subs r1, r1, #25     @ Subtract $0.25 (25 cents)
+    SUB r1, r1, #25     @ Subtract $0.25 (25 cents)
     b payment_end_loop
 
 payment_dime:
-    subs r1, r1, #10     @ Subtract $0.10 (10 cents)
+    SUB r1, r1, #10     @ Subtract $0.10 (10 cents)
     b payment_end_loop
 
 bad_payment:
@@ -301,8 +301,8 @@ compute_dollars_cents:
 dollar_loop:
     cmp r4, #100
     blt end_compute_dollars_cents
-    subs r4, r4, #100
-    adds r3, r3, #1
+    SUB r4, r4, #100
+    ADD r3, r3, #1
     b dollar_loop
 
 end_compute_dollars_cents:
