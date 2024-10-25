@@ -27,7 +27,7 @@ loop:
     ADD r2, r2, r3
 
     cmp r2, #0
-    ble exit
+    ble exit_long    @ Use long branch
 
     @ Display choices
     ldr r0, =choices_ptr
@@ -290,8 +290,7 @@ payment_end:
     bl printf
 
 no_change:
-    pop {lr}
-    bx lr
+    pop {pc}      @ Return from subroutine
 
 compute_dollars_cents:
     push {lr}
@@ -306,8 +305,11 @@ dollar_loop:
     b dollar_loop
 
 end_compute_dollars_cents:
-    pop {lr}
-    bx lr
+    pop {pc}      @ Return from subroutine
+
+exit_long:
+    ldr r0, =exit
+    bx r0
 
 exit:
     @ Print message
@@ -315,8 +317,7 @@ exit:
     ldr r0, [r0]
     bl printf
     mov r0, #0
-    pop {lr}
-    bx lr
+    pop {pc}      @ Return from main
 
 .data
 
