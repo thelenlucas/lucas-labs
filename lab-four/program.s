@@ -1,4 +1,3 @@
-.syntax unified
 .thumb
 .global main
 .global printf
