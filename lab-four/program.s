@@ -62,14 +62,85 @@ vending_machine_main_loop:
     ldr r1, =inv_mnms
     ldr r1, [r1]
     add r0, r1
+    beq vending_machine_out_of_stock
 
+    @ Print choices
+    ldr r0, =choices
+    bl printf
+
+    @ Get user input
+    ldr r0, =format_char
+    ldr r1, =in_char
+    bl scanf
+    bl getchar  @ Clear buffer
+    ldr r1, =in_char
+    ldrb r0, [r1]
+
+    @ Check the input
+    cmp r0, #'G'
+    beq gum_handler
+    cmp r0, #'P'
+    beq peanuts_handler
+    cmp r0, #'C'
+    beq crackers_handler
+    cmp r0, #'M'
+    beq mnms_handler
+    cmp r0, #'I'
+    beq inventory_handler
+
+    @ Invalid choice
+    ldr r0, =invalid_choice
+    bl printf
+    b loop
+
+.ltorg
+
+gum_handler:
+    b loop
+
+.ltorg
+
+peanuts_handler:
+    b loop
+
+.ltorg
+
+crackers_handler:
+    b loop
+
+.ltorg
+
+mnms_handler:
+    b loop
+
+.ltorg
+
+inventory_handler:
+    b loop
+
+.ltorg
+
+
+vending_machine_out_of_stock:
+    ldr r0, =out_of_stock
     pop {pc}
+
+.ltorg
 
 @ Data section
 .data
+
+@ Strings
 .balign 4   @ Variables are still 32-bit, only instructions are 16-bit
 welcome:    .asciz "Welcome to the vending machine!\n"
+.balign 4  
+out_of_stock: .asciz "Sorry, vending machine out of stock! Exiting...\n"
+.balign 4
+choices: .asciz "\nPlease choose Gum (G), Peanuts (P), Cheese Crackers (C), or M&Ms (M): "
+.balign 4
+invalid_choice: .asciz "Sorry, invalid choice, please choose again."
 
+@ Inventory
 .balign 4
 inv_gum: .word 2
 .balign 4
@@ -78,3 +149,9 @@ inv_peanuts: .word 2
 inv_crackers: .word 2
 .balign 4
 inv_mnms: .word 2
+
+@ Input handling
+.balign 4
+format_char: .asciz " %c"
+.balign 4
+in_char: .word 0
