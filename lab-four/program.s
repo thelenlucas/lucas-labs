@@ -7,6 +7,8 @@
     .thumb                @ Enable Thumb instruction set
 
     .thumb_func           @ Indicate Thumb function
+
+.balign 2
 main:
     push {lr}             @ Save the link register
 
