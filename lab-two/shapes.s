@@ -480,7 +480,7 @@ trap_calc_end:
 
 .data
 .balign 4
-welcome:                        .asciz "Welcome!\n"
+welcome:                        .asciz "Hey!\n"
 .balign 4
 choices:                        .asciz "Please choose a shape:\nTriangle (1)\nSquare (2)\nRectangle (3)\nTrapezoid (4)\n"
 .balign 4
