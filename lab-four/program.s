@@ -5,7 +5,6 @@
     .syntax unified       @ Use unified assembly syntax
     .arch armv6           @ Specify ARMv6 architecture
     .thumb                @ Enable Thumb instruction set
-    .fpu vfp              @ Use VFP (Vector Floating Point)
 
     .thumb_func           @ Indicate Thumb function
 main:
@@ -103,9 +102,9 @@ gum:
     ldr r0, =choose_gum
     bl printf
 
-    @ Go to payment subroutine - use d0 to store price required
-    ldr r0, =gum_price
-    vldr.f64 d0, [r0]
+    @ Go to payment subroutine - use r4 to store price required
+    ldr r4, =gum_price
+    ldr r4, [r4]
     bl payment
 
     @ Subtract one from the inventory of gum
@@ -129,9 +128,9 @@ peanuts:
     ldr r0, =choose_peanuts
     bl printf
 
-    @ Go to payment subroutine - use d0 to store price required
-    ldr r0, =peanuts_price
-    vldr.f64 d0, [r0]
+    @ Go to payment subroutine - use r4 to store price required
+    ldr r4, =peanuts_price
+    ldr r4, [r4]
     bl payment
 
     @ Subtract one from the inventory
@@ -155,9 +154,9 @@ crackers:
     ldr r0, =choose_crackers
     bl printf
 
-    @ Go to payment subroutine - use d0 to store price required
-    ldr r0, =crackers_price
-    vldr.f64 d0, [r0]
+    @ Go to payment subroutine - use r4 to store price required
+    ldr r4, =crackers_price
+    ldr r4, [r4]
     bl payment
 
     @ Subtract one from the inventory
@@ -181,9 +180,9 @@ mnms:
     ldr r0, =choose_mnms
     bl printf
 
-    @ Go to payment subroutine - use d0 to store price required
-    ldr r0, =mnms_price
-    vldr.f64 d0, [r0]
+    @ Go to payment subroutine - use r4 to store price required
+    ldr r4, =mnms_price
+    ldr r4, [r4]
     bl payment
 
     @ Subtract one from the inventory
@@ -206,6 +205,9 @@ out_of_stock:
 payment:
     push {lr}
 
+    mov r5, r4          @ r5 holds the amount due in cents
+    mov r6, #0          @ r6 will accumulate the total amount paid
+
 payment_loop:
     @ Ask for value
     ldr r0, =money
@@ -218,8 +220,7 @@ payment_loop:
     ldr r0, =in_char
     ldrb r0, [r0]
 
-sub_time:
-    @ Check and subtract right amount
+    @ Check and add the right amount
     cmp r0, #'B'
     beq payment_dollar
     cmp r0, #'Q'
@@ -229,72 +230,67 @@ sub_time:
     b bad_payment
 
 payment_dollar:
-    @ Subtract amount
-    ldr r0, =dollar
-    vldr.f64 d1, [r0]
-    vsub.f64 d0, d0, d1
-    b payment_end_loop
+    add r6, r6, #100    @ Add 100 cents for a dollar
+    b payment_check
 
 payment_quarter:
-    @ Same as above
-    ldr r0, =quarter
-    vldr.f64 d1, [r0]
-    vsub.f64 d0, d0, d1
-    b payment_end_loop
+    add r6, r6, #25     @ Add 25 cents for a quarter
+    b payment_check
 
 payment_dime:
-    @ Likewise
-    ldr r0, =dime
-    vldr.f64 d1, [r0]
-    vsub.f64 d0, d0, d1
-    b payment_end_loop
+    add r6, r6, #10     @ Add 10 cents for a dime
+    b payment_check
 
 bad_payment:
-    @ Give feedback and loop back
+    @ Invalid input
     ldr r0, =invalid_choice
     bl printf
     b payment_loop
 
-payment_end_loop:
-    @ Save the value in d2, because either printf or the compare screws things up
-    vmov.f64 d2, d0
-    @ See if the amount left is less than one cent (rounding errors, yayyy)
-    ldr r0, =one_cent
-    vldr.f64 d1, [r0]
-    vcmp.f64 d0, d1
-    vmrs APSR_nzcv, FPSCR
+payment_check:
+    cmp r6, r5          @ Compare total paid with amount due
+    blt payment_display_balance  @ If less, continue payment
 
-    @ If we're negative, branch to end, otherwise continue
-    bpl payment_loop_continue
-    b payment_end
+    @ If equal or more, calculate change
+    subs r7, r6, r5     @ r7 = total paid - amount due (change)
+    b payment_finalize
 
-payment_loop_continue:
-    @ Print amount left
-    ldr r0, =left
-    vmov r2, r3, d0       @ Move double to r2 and r3 for printf
-    bl printf
-    @ Move value back
-    vmov.f64 d0, d2
+payment_display_balance:
+    @ Display amount left to pay
+    subs r7, r5, r6     @ r7 = amount due - total paid
+    ldr r0, =left_format
+    mov r1, r7          @ Amount left in cents
+    bl print_amount
     b payment_loop
 
-payment_end:
-    @ Print item deposited
+payment_finalize:
+    @ Dispense item
     ldr r0, =success
     bl printf
 
-    @ Calculate change
-    ldr r0, =zero_val
-    vldr.f64 d1, [r0]
-    vsub.f64 d1, d1, d0
-    vmov r2, r3, d1
+    @ If change is due, print it
+    cmp r7, #0
+    beq payment_done    @ No change due
+    ldr r0, =change_format
+    mov r1, r7          @ Change in cents
+    bl print_amount
 
-    @ Print change
-    ldr r0, =change
-    bl printf
-
-    @ Link and return
+payment_done:
     pop {lr}
     bx lr
+
+    .thumb_func
+print_amount:
+    @ Input: r1 = amount in cents
+    @ Output: None (prints amount as dollars and cents)
+    push {r0-r3, lr}
+    mov r2, #100
+    bl __aeabi_idivmod   @ Divide r1 by 100, quotient in r0, remainder in r1
+    mov r2, r0           @ r2 = dollars
+    mov r3, r1           @ r3 = cents
+    mov r0, r0           @ Placeholder to align stack if necessary
+    bl printf
+    pop {r0-r3, pc}
 
     .thumb_func
 exit:
@@ -306,83 +302,70 @@ exit:
     pop {lr}
     bx lr                 @ Return from main
 
-.data
+    .data
 
-.balign 4
+    .balign 4
 welcome: .asciz "Welcome to the vending machine!\n"
-.balign 4
+    .balign 4
 choices: .asciz "\nPlease choose Gum (G), Peanuts (P), Cheese Crackers (C), or M&Ms (M)\n"
-.balign 4
+    .balign 4
 enter_choice: .asciz "Enter your choice: "
-.balign 4
+    .balign 4
 money: .asciz "Enter Dollar (B)ill, (Q)uarter, or (D)ime: "
-.balign 4
-left: .asciz "$%.2f left to pay\n\n"
-.balign 4
+    .balign 4
+left_format: .asciz "$%d.%02d left to pay\n\n"
+    .balign 4
 success: .asciz "Here's your item!\n"
-.balign 4
-change: .asciz "Change: $%.2f\n"
-.balign 4
+    .balign 4
+change_format: .asciz "Change: $%d.%02d\n"
+    .balign 4
 depleted: .asciz "Stock depleted! Exiting...\n"
 
-.balign 4
-zero_val: .double 0.0
-.balign 4
-one_cent: .double 0.01
-.balign 4
-dollar: .double 1.00
-.balign 4
-quarter: .double 0.25
-.balign 4
-dime: .double 0.10
-.balign 4
-current_balance: .double 0.00
-
-.balign 4
+    .balign 4
 choose_gum: .asciz "Gum is $0.50\n"
-.balign 4
-gum_price: .double 0.50
+    .balign 4
+gum_price: .word 50        @ Price in cents
 
-.balign 4
+    .balign 4
 choose_peanuts: .asciz "Peanuts are $0.55\n"
-.balign 4
-peanuts_price: .double 0.55
+    .balign 4
+peanuts_price: .word 55    @ Price in cents
 
-.balign 4
+    .balign 4
 choose_crackers: .asciz "Cheese Crackers are $0.65\n"
-.balign 4
-crackers_price: .double 0.65
+    .balign 4
+crackers_price: .word 65   @ Price in cents
 
-.balign 4
+    .balign 4
 choose_mnms: .asciz "M&Ms are $1.00\n"
-.balign 4
-mnms_price: .double 1.00
+    .balign 4
+mnms_price: .word 100      @ Price in cents
 
-.balign 4
+    .balign 4
 invalid_choice: .asciz "Invalid choice. Please try again.\n"
-.balign 4
+    .balign 4
 oos_message: .asciz "Sorry! Out of stock. Please choose again.\n"
-.balign 4
+    .balign 4
 inventory_message: .asciz "Inventory mode activated.\n"
-.balign 4
+    .balign 4
 gum_inventory: .asciz "Gum: %d\n"
-.balign 4
+    .balign 4
 peanuts_inventory: .asciz "Peanuts: %d\n"
-.balign 4
+    .balign 4
 crackers_inventory: .asciz "Crackers: %d\n"
-.balign 4
+    .balign 4
 mnms_inventory: .asciz "M&Ms: %d\n"
 
-.balign 4
+    .balign 4
 format_char: .asciz " %c"
-.balign 4
+    .balign 4
 in_char: .word 0
 
-.balign 4
+    .balign 4
 int_gum: .word 2
-.balign 4
+    .balign 4
 int_peanuts: .word 2
-.balign 4
+    .balign 4
 int_crackers: .word 2
-.balign 4
+    .balign 4
 int_mnms: .word 2
