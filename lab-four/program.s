@@ -230,15 +230,18 @@ payment_loop:
     b bad_payment
 
 payment_dollar:
-    add r6, r6, #100    @ Add 100 cents for a dollar
+	mov r5, #100
+    add r6, r5    @ Add 100 cents for a dollar
     b payment_check
 
 payment_quarter:
-    add r6, r6, #25     @ Add 25 cents for a quarter
+	mov r5, #25
+    add r6, r5     @ Add 25 cents for a quarter
     b payment_check
 
 payment_dime:
-    add r6, r6, #10     @ Add 10 cents for a dime
+	mov r5, #10
+    add r6, r5     @ Add 10 cents for a dime
     b payment_check
 
 bad_payment:
