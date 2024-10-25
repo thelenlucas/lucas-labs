@@ -12,21 +12,20 @@ main:
     push {lr}
 
     @ Display welcome message
-    ldr r0, =welcome_ptr
-    ldr r0, [r0]
+    ldr r0, =welcome
     bl printf
 
 loop:
     @ Check if inventory is depleted
-    ldr r1, =int_gum_ptr
+    ldr r1, =int_gum
     ldr r2, [r1]
-    ldr r1, =int_peanuts_ptr
+    ldr r1, =int_peanuts
     ldr r3, [r1]
     ADD r2, r2, r3
-    ldr r1, =int_crackers_ptr
+    ldr r1, =int_crackers
     ldr r3, [r1]
     ADD r2, r2, r3
-    ldr r1, =int_mnms_ptr
+    ldr r1, =int_mnms
     ldr r3, [r1]
     ADD r2, r2, r3
 
@@ -34,18 +33,15 @@ loop:
     ble exit_long    @ Use long branch
 
     @ Display choices
-    ldr r0, =choices_ptr
-    ldr r0, [r0]
+    ldr r0, =choices
     bl printf
 
     @ Prompt for choice
-    ldr r0, =enter_choice_ptr
-    ldr r0, [r0]
+    ldr r0, =enter_choice
     bl printf
 
     @ Get user's choice
-    ldr r0, =format_char_ptr
-    ldr r0, [r0]
+    ldr r0, =format_char
     ldr r1, =in_char
     bl scanf
 
@@ -68,58 +64,51 @@ loop:
     beq inventory
 
     @ Invalid choice
-    ldr r0, =invalid_choice_ptr
-    ldr r0, [r0]
+    ldr r0, =invalid_choice
     bl printf
     b loop
 
 inventory:
-    ldr r0, =inventory_message_ptr
-    ldr r0, [r0]
+    ldr r0, =inventory_message
     bl printf
 
     @ Print Inventory
-    ldr r0, =gum_inventory_ptr
-    ldr r0, [r0]
-    ldr r1, =int_gum_ptr
+    ldr r0, =gum_inventory
+    ldr r1, =int_gum
     ldr r1, [r1]
     bl printf
-    ldr r0, =peanuts_inventory_ptr
-    ldr r0, [r0]
-    ldr r1, =int_peanuts_ptr
+    ldr r0, =peanuts_inventory
+    ldr r1, =int_peanuts
     ldr r1, [r1]
     bl printf
-    ldr r0, =crackers_inventory_ptr
-    ldr r0, [r0]
-    ldr r1, =int_crackers_ptr
+    ldr r0, =crackers_inventory
+    ldr r1, =int_crackers
     ldr r1, [r1]
     bl printf
-    ldr r0, =mnms_inventory_ptr
-    ldr r0, [r0]
-    ldr r1, =int_mnms_ptr
+    ldr r0, =mnms_inventory
+    ldr r1, =int_mnms
     ldr r1, [r1]
     bl printf
     b loop
 
 gum:
     @ If out of stock, skip
-    ldr r0, =int_gum_ptr
+    ldr r0, =int_gum
     ldr r0, [r0]
     cmp r0, #0
     ble out_of_stock
 
     @ Print Price
-    ldr r0, =choose_gum_ptr
-    ldr r0, [r0]
+    ldr r0, =choose_gum
     bl printf
 
     @ Go to payment subroutine
-    ldr r0, =gum_price_ptr
+    ldr r0, =gum_price
     ldr r0, [r0]
     bl payment
 
     @ Subtract one from the inventory of gum
-    ldr r0, =int_gum_ptr
+    ldr r0, =int_gum
     ldr r1, [r0]
     SUB r1, r1, #1
     str r1, [r0]
@@ -128,23 +117,22 @@ gum:
 
 peanuts:
     @ If out of stock, skip
-    ldr r0, =int_peanuts_ptr
+    ldr r0, =int_peanuts
     ldr r0, [r0]
     cmp r0, #0
     ble out_of_stock
 
     @ Print Price
-    ldr r0, =choose_peanuts_ptr
-    ldr r0, [r0]
+    ldr r0, =choose_peanuts
     bl printf
 
     @ Go to payment subroutine
-    ldr r0, =peanuts_price_ptr
+    ldr r0, =peanuts_price
     ldr r0, [r0]
     bl payment
 
     @ Subtract one from the inventory
-    ldr r0, =int_peanuts_ptr
+    ldr r0, =int_peanuts
     ldr r1, [r0]
     SUB r1, r1, #1
     str r1, [r0]
@@ -153,23 +141,22 @@ peanuts:
 
 crackers:
     @ If out of stock, skip
-    ldr r0, =int_crackers_ptr
+    ldr r0, =int_crackers
     ldr r0, [r0]
     cmp r0, #0
     ble out_of_stock
 
     @ Print Price
-    ldr r0, =choose_crackers_ptr
-    ldr r0, [r0]
+    ldr r0, =choose_crackers
     bl printf
 
     @ Go to payment subroutine
-    ldr r0, =crackers_price_ptr
+    ldr r0, =crackers_price
     ldr r0, [r0]
     bl payment
 
     @ Subtract one from the inventory
-    ldr r0, =int_crackers_ptr
+    ldr r0, =int_crackers
     ldr r1, [r0]
     SUB r1, r1, #1
     str r1, [r0]
@@ -178,23 +165,22 @@ crackers:
 
 mnms:
     @ If out of stock, skip
-    ldr r0, =int_mnms_ptr
+    ldr r0, =int_mnms
     ldr r0, [r0]
     cmp r0, #0
     ble out_of_stock
 
     @ Print Price
-    ldr r0, =choose_mnms_ptr
-    ldr r0, [r0]
+    ldr r0, =choose_mnms
     bl printf
 
     @ Go to payment subroutine
-    ldr r0, =mnms_price_ptr
+    ldr r0, =mnms_price
     ldr r0, [r0]
     bl payment
 
     @ Subtract one from the inventory
-    ldr r0, =int_mnms_ptr
+    ldr r0, =int_mnms
     ldr r1, [r0]
     SUB r1, r1, #1
     str r1, [r0]
@@ -203,8 +189,7 @@ mnms:
 
 out_of_stock:
     @ Print out of stock message and loop back
-    ldr r0, =oos_message_ptr
-    ldr r0, [r0]
+    ldr r0, =oos_message
     bl printf
     b loop
 
@@ -214,12 +199,10 @@ payment:
 
 payment_loop:
     @ Ask for value
-    ldr r0, =money_ptr
-    ldr r0, [r0]
+    ldr r0, =money
     bl printf
     @ Get choice
-    ldr r0, =format_char_ptr
-    ldr r0, [r0]
+    ldr r0, =format_char
     ldr r2, =in_char
     bl scanf
     bl getchar
@@ -249,8 +232,7 @@ payment_dime:
 
 bad_payment:
     @ Give feedback and loop back
-    ldr r0, =invalid_choice_ptr
-    ldr r0, [r0]
+    ldr r0, =invalid_choice
     bl printf
     b payment_loop
 
@@ -263,8 +245,7 @@ payment_end_loop:
     mov r2, r1    @ amount left in cents
     bl compute_dollars_cents    @ computes dollars in r3, cents in r4
 
-    ldr r0, =left_ptr
-    ldr r0, [r0]
+    ldr r0, =left
     mov r1, r3    @ dollars
     mov r2, r4    @ cents
     bl printf
@@ -273,8 +254,7 @@ payment_end_loop:
 
 payment_end:
     @ Print item dispensed
-    ldr r0, =success_ptr
-    ldr r0, [r0]
+    ldr r0, =success
     bl printf
 
     @ Calculate change (if any)
@@ -287,8 +267,7 @@ payment_end:
     @ Compute dollars and cents for change
     bl compute_dollars_cents    @ computes dollars in r3, cents in r4
 
-    ldr r0, =change_ptr
-    ldr r0, [r0]
+    ldr r0, =change
     mov r1, r3    @ dollars
     mov r2, r4    @ cents
     bl printf
@@ -313,121 +292,92 @@ end_compute_dollars_cents:
 
 exit:
     @ Print message
-    ldr r0, =depleted_ptr
-    ldr r0, [r0]
+    ldr r0, =depleted
     bl printf
     mov r0, #0
     pop {pc}      @ Return from main
 
 .data
 
-.balign 4
-welcome_ptr: .word welcome
+.align 4
 welcome: .asciz "Welcome to the vending machine!\n"
 
-.balign 4
-choices_ptr: .word choices
+.align 4
 choices: .asciz "\nPlease choose Gum (G), Peanuts (P), Cheese Crackers (C), or M&Ms (M)\n"
 
-.balign 4
-enter_choice_ptr: .word enter_choice
+.align 4
 enter_choice: .asciz "Enter your choice: "
 
-.balign 4
-money_ptr: .word money
+.align 4
 money: .asciz "Enter Dollar (B)ill, (Q)uarter, or (D)ime: "
 
-.balign 4
-left_ptr: .word left
+.align 4
 left: .asciz "$%d.%02d left to pay\n\n"
 
-.balign 4
-success_ptr: .word success
+.align 4
 success: .asciz "Here's your item!\n"
 
-.balign 4
-change_ptr: .word change
+.align 4
 change: .asciz "Change: $%d.%02d\n"
 
-.balign 4
-depleted_ptr: .word depleted
+.align 4
 depleted: .asciz "Stock depleted! Exiting...\n"
 
-.balign 4
-choose_gum_ptr: .word choose_gum
+.align 4
 choose_gum: .asciz "Gum is $0.50\n"
-.balign 4
-gum_price_ptr: .word gum_price
+.align 4
 gum_price: .word 50
 
-.balign 4
-choose_peanuts_ptr: .word choose_peanuts
+.align 4
 choose_peanuts: .asciz "Peanuts are $0.55\n"
-.balign 4
-peanuts_price_ptr: .word peanuts_price
+.align 4
 peanuts_price: .word 55
 
-.balign 4
-choose_crackers_ptr: .word choose_crackers
+.align 4
 choose_crackers: .asciz "Cheese Crackers are $0.65\n"
-.balign 4
-crackers_price_ptr: .word crackers_price
+.align 4
 crackers_price: .word 65
 
-.balign 4
-choose_mnms_ptr: .word choose_mnms
+.align 4
 choose_mnms: .asciz "M&Ms are $1.00\n"
-.balign 4
-mnms_price_ptr: .word mnms_price
+.align 4
 mnms_price: .word 100
 
-.balign 4
-invalid_choice_ptr: .word invalid_choice
+.align 4
 invalid_choice: .asciz "Invalid choice. Please try again.\n"
 
-.balign 4
-oos_message_ptr: .word oos_message
+.align 4
 oos_message: .asciz "Sorry! Out of stock. Please choose again.\n"
 
-.balign 4
-inventory_message_ptr: .word inventory_message
+.align 4
 inventory_message: .asciz "Inventory mode activated.\n"
 
-.balign 4
-gum_inventory_ptr: .word gum_inventory
+.align 4
 gum_inventory: .asciz "Gum: %d\n"
 
-.balign 4
-peanuts_inventory_ptr: .word peanuts_inventory
+.align 4
 peanuts_inventory: .asciz "Peanuts: %d\n"
 
-.balign 4
-crackers_inventory_ptr: .word crackers_inventory
+.align 4
 crackers_inventory: .asciz "Crackers: %d\n"
 
-.balign 4
-mnms_inventory_ptr: .word mnms_inventory
+.align 4
 mnms_inventory: .asciz "M&Ms: %d\n"
 
-.balign 4
-format_char_ptr: .word format_char
+.align 4
 format_char: .asciz " %c"
 
-.balign 4
+.align 4
 in_char: .space 1
 
-.balign 4
-int_gum_ptr: .word int_gum
+.align 4
 int_gum: .word 2
 
-.balign 4
-int_peanuts_ptr: .word int_peanuts
+.align 4
 int_peanuts: .word 2
 
-.balign 4
-int_crackers_ptr: .word int_crackers
+.align 4
 int_crackers: .word 2
 
-.balign 4
-int_mnms_ptr: .word int_mnms
+.align 4
 int_mnms: .word 2
