@@ -40,7 +40,7 @@ main:
 
 .ltorg	@ Force the assembler to stick literals here, so they're still accessable later. This is why I hate thumb programming lol
 
-@ Handles the main loop of:
+@ Handles the mainvending_machine_main_loop of:
 @ 1. Check for empty machine
 @ 2. Display Choices and prompt for user input
 @ 3. Jump to appropriate handler function for food type
@@ -91,32 +91,32 @@ vending_machine_main_loop:
     @ Invalid choice
     ldr r0, =invalid_choice
     bl printf
-    b loop
+    b vending_machine_main_loop
 
 .ltorg
 
 gum_handler:
-    b loop
+    b vending_machine_main_loop
 
 .ltorg
 
 peanuts_handler:
-    b loop
+    b vending_machine_main_loop
 
 .ltorg
 
 crackers_handler:
-    b loop
+    b vending_machine_main_loop
 
 .ltorg
 
 mnms_handler:
-    b loop
+    b vending_machine_main_loop
 
 .ltorg
 
 inventory_handler:
-    b loop
+    b vending_machine_main_loop
 
 .ltorg
 
