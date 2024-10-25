@@ -19,6 +19,7 @@
 .global getchar     @ Likewise
 .thumb				@ Assemble in Thumb mode
 .arch armv6			@ Specify ARMv6 architecture
+.global __aeabi_uidiv   @ Int division (unsigned)
 
 .text				@ Code section
 
@@ -97,6 +98,20 @@ vending_machine_main_loop:
 
 gum_handler:
     b vending_machine_main_loop
+    @ If out of stock, skip
+	ldr r0, =inv_gum
+	ldr r0, [r0]
+	cmp r0, #0
+	ble out_of_stock
+
+    @ Print price and start purchase function
+    ldr r0, =gum_price
+    bl printf
+
+    ldr r0, #55
+    bl purchase_function
+
+    b vending_machine_main_loop
 
 .ltorg
 
@@ -120,12 +135,122 @@ inventory_handler:
 
 .ltorg
 
+out_of_stock:
+    @ Inform and loop
+    ldr r0, =out_of_individual_stock
+    bl printf
+    b vending_machine_main_loop
 
 vending_machine_out_of_stock:
     ldr r0, =out_of_stock
     pop {pc}
 
 .ltorg
+
+@ Prints a dollar amount using the price in cents in r0
+print_dollars:
+    push {lr}
+    mov r7, r0  @ Stick this for safekeeping
+
+    @ Get dollar portion
+    movs r1, #100
+    bl __aeabi_uidiv    @ Divide
+
+    mov r0, r6  @ r6 has the dollar amount now
+
+    @ No dollar amount we're handling should be above 2.00, so we don't need to bother with module thankfully
+    sub r7, r7, r6 @ Cents remainder
+
+    @ Print
+    mov r0, =dollar_part_one
+    mov r1, r6
+    bl printf
+    mov r0, =dollar_part_two
+    mov r1, r7
+    bl printf
+
+    @ Return
+    pop {pc}
+
+.ltorg
+
+@ Requests money until an amount in r0 is satisfied, then prints change
+purchase_function:
+    push {lr}
+
+    mov r7, r0  @ Store
+purchase_function_loop:
+    @ Print amount left to pay
+    ldr r0, =left_to_pay_one
+    bl printf
+    mov r0, r7
+    bl print_dollars
+    ldr r0, =newline
+    bl printf
+
+purchase_function_get_input:
+    @ Get choice
+	ldr r0, =format_char
+	ldr r1, =in_char
+	bl scanf
+	bl getchar
+	ldr r0, =in_char
+	ldrb r0, [r0]
+	cmp r0, #'B'
+	beq purchase_function_dollar
+	cmp r0, #'Q'
+	beq purchase_function_quarter
+	cmp r0, #'D'
+	beq purchase_function_dime
+	b purchase_function_bad_payment
+
+purchase_function_dollar:
+	@ Subtract amount
+    subs r7, r7, #100
+    bl peyment_function_end_loop
+
+purchase_function_quarter:
+	@ Same as above
+	ldr r0, =quarter
+	vldr.64 d1, [r0]
+	vsub.F64 d0, d0, d1
+	b payment_end_loop
+
+purchase_function_dime:
+	@ Likewise
+	ldr r0, =dime
+	vldr.64 d1, [r0]
+	vsub.F64 d0, d0, d1
+	b payment_end_loop
+
+purchase_function_bad_payment:
+	@ Give feedback and loop back
+	ldr r0, =invalid_choice
+	bl printf
+	b purchase_function_get_input
+
+purchase_function_end_loop:
+    @ Check if we're done
+    cmp r7, 0
+    blt purchase_function_done
+    b purchase_function_loop
+
+purchase_function_done:
+    @ Negate remainder/underflow amount (can't use mvn, sad)
+    mov r1, 0
+    subs r0, r1, r7
+    mov r7, r0
+
+    @ Print change
+    ldr r0, =change
+    bl printf
+    mov r0, r7
+    bl print_dollars
+    ldr r0, =newline
+    bl printf
+
+    @ Return
+    pop {pc}
 
 @ Data section
 .data
@@ -139,6 +264,22 @@ out_of_stock: .asciz "Sorry, vending machine out of stock! Exiting...\n"
 choices: .asciz "\nPlease choose Gum (G), Peanuts (P), Cheese Crackers (C), or M&Ms (M): "
 .balign 4
 invalid_choice: .asciz "Sorry, invalid choice, please choose again."
+.balign 4
+out_of_individual_stock: .asciz "Sorry, out of that item. Please choose another."
+.balign 4
+dollar_part_one: .asciz "$%d."
+.balign 4
+dollar_part_two: .asciz "%02d"
+.balign 4
+newline: .asciz "\n"
+.balign 4
+gum_price: .asciz "Gum costs $0.55\n"
+.balign 4
+left_to_pay_one: .asciz "You have: "
+.balign 4
+bills_display: .asciz "Enter Dollar (B)ill, (Q)aurter, or (D)ime: "
+.balign 4
+change: .asciz "Change: "
 
 @ Inventory
 .balign 4
