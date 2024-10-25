@@ -321,113 +321,113 @@ exit:
 
 .data
 
-.align 2
+.balign 4
 welcome_ptr: .word welcome
 welcome: .asciz "Welcome to the vending machine!\n"
 
-.align 2
+.balign 4
 choices_ptr: .word choices
 choices: .asciz "\nPlease choose Gum (G), Peanuts (P), Cheese Crackers (C), or M&Ms (M)\n"
 
-.align 2
+.balign 4
 enter_choice_ptr: .word enter_choice
 enter_choice: .asciz "Enter your choice: "
 
-.align 2
+.balign 4
 money_ptr: .word money
 money: .asciz "Enter Dollar (B)ill, (Q)uarter, or (D)ime: "
 
-.align 2
+.balign 4
 left_ptr: .word left
 left: .asciz "$%d.%02d left to pay\n\n"
 
-.align 2
+.balign 4
 success_ptr: .word success
 success: .asciz "Here's your item!\n"
 
-.align 2
+.balign 4
 change_ptr: .word change
 change: .asciz "Change: $%d.%02d\n"
 
-.align 2
+.balign 4
 depleted_ptr: .word depleted
 depleted: .asciz "Stock depleted! Exiting...\n"
 
-.align 2
+.balign 4
 choose_gum_ptr: .word choose_gum
 choose_gum: .asciz "Gum is $0.50\n"
-.align 2
+.balign 4
 gum_price_ptr: .word gum_price
 gum_price: .word 50
 
-.align 2
+.balign 4
 choose_peanuts_ptr: .word choose_peanuts
 choose_peanuts: .asciz "Peanuts are $0.55\n"
-.align 2
+.balign 4
 peanuts_price_ptr: .word peanuts_price
 peanuts_price: .word 55
 
-.align 2
+.balign 4
 choose_crackers_ptr: .word choose_crackers
 choose_crackers: .asciz "Cheese Crackers are $0.65\n"
-.align 2
+.balign 4
 crackers_price_ptr: .word crackers_price
 crackers_price: .word 65
 
-.align 2
+.balign 4
 choose_mnms_ptr: .word choose_mnms
 choose_mnms: .asciz "M&Ms are $1.00\n"
-.align 2
+.balign 4
 mnms_price_ptr: .word mnms_price
 mnms_price: .word 100
 
-.align 2
+.balign 4
 invalid_choice_ptr: .word invalid_choice
 invalid_choice: .asciz "Invalid choice. Please try again.\n"
 
-.align 2
+.balign 4
 oos_message_ptr: .word oos_message
 oos_message: .asciz "Sorry! Out of stock. Please choose again.\n"
 
-.align 2
+.balign 4
 inventory_message_ptr: .word inventory_message
 inventory_message: .asciz "Inventory mode activated.\n"
 
-.align 2
+.balign 4
 gum_inventory_ptr: .word gum_inventory
 gum_inventory: .asciz "Gum: %d\n"
 
-.align 2
+.balign 4
 peanuts_inventory_ptr: .word peanuts_inventory
 peanuts_inventory: .asciz "Peanuts: %d\n"
 
-.align 2
+.balign 4
 crackers_inventory_ptr: .word crackers_inventory
 crackers_inventory: .asciz "Crackers: %d\n"
 
-.align 2
+.balign 4
 mnms_inventory_ptr: .word mnms_inventory
 mnms_inventory: .asciz "M&Ms: %d\n"
 
-.align 2
+.balign 4
 format_char_ptr: .word format_char
 format_char: .asciz " %c"
 
-.align 2
+.balign 4
 in_char: .space 1
 
-.align 2
+.balign 4
 int_gum_ptr: .word int_gum
 int_gum: .word 2
 
-.align 2
+.balign 4
 int_peanuts_ptr: .word int_peanuts
 int_peanuts: .word 2
 
-.align 2
+.balign 4
 int_crackers_ptr: .word int_crackers
 int_crackers: .word 2
 
-.align 2
+.balign 4
 int_mnms_ptr: .word int_mnms
 int_mnms: .word 2
