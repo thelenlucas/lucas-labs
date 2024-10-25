@@ -17,16 +17,16 @@ main:
 loop:
     @ Check if inventory is depleted
     ldr r1, =int_gum
-    ldr r0, [r1]
+    ldr r0, [r1]          @ r0 = int_gum
     ldr r1, =int_peanuts
-    ldr r1, [r1]
-    add r0, r0, r1
+    ldr r1, [r1]          @ r1 = int_peanuts
+    add r0, r1            @ r0 = r0 + r1
     ldr r1, =int_crackers
-    ldr r1, [r1]
-    add r0, r0, r1
+    ldr r1, [r1]          @ r1 = int_crackers
+    add r0, r1            @ r0 = r0 + r1
     ldr r1, =int_mnms
-    ldr r1, [r1]
-    add r0, r0, r1
+    ldr r1, [r1]          @ r1 = int_mnms
+    add r0, r1            @ r0 = r0 + r1
 
     cmp r0, #0
     ble exit
@@ -285,10 +285,9 @@ print_amount:
     @ Output: None (prints amount as dollars and cents)
     push {r0-r3, lr}
     mov r2, #100
-    bl __aeabi_idivmod   @ Divide r1 by 100, quotient in r0, remainder in r1
+    bl __aeabi_uidivmod   @ Unsigned division and modulus
     mov r2, r0           @ r2 = dollars
     mov r3, r1           @ r3 = cents
-    mov r0, r0           @ Placeholder to align stack if necessary
     bl printf
     pop {r0-r3, pc}
 
