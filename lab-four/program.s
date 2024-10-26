@@ -147,8 +147,10 @@ vending_machine_out_of_stock:
 .ltorg
 
 @ Prints a dollar amount using the price in cents in r0
+@ The caller function usually uses r6/7, so we'll save those
 print_dollars:
     push {lr}
+    push {r6, r7}
     mov r7, r0  @ Stick this for safekeeping
 
     @ Get dollar portion
@@ -167,6 +169,7 @@ print_dollars:
     bl printf
 
     @ Return
+    pop {r6, r7}
     pop {pc}
 
 .ltorg
