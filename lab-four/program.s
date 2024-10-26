@@ -234,7 +234,7 @@ purchase_function_end_loop:
 
 purchase_function_done:
     @ Get change
-    sub r6, r7
+    sub r6, #0
 
     @ Print change
     ldr r0, =change
