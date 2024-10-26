@@ -183,12 +183,15 @@ purchase_function_loop:
     @ Print amount inserted
     ldr r0, =money_in
     bl printf
-    mov r0, r7
+    mov r0, r6
     bl print_dollars
     ldr r0, =newline
     bl printf
 
 purchase_function_get_input:
+    @ Display choices
+    ldr r0, =bills_display
+    bl printf
     @ Get choice
 	ldr r0, =format_char
 	ldr r1, =in_char
