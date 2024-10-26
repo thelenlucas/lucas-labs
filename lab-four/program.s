@@ -107,7 +107,7 @@ gum_handler:
     ldr r0, =gum_price
     bl printf
 
-    mov r0, #55
+    mov r0, #50
     bl purchase_function
 
     b vending_machine_main_loop
@@ -115,16 +115,55 @@ gum_handler:
 .ltorg
 
 peanuts_handler:
+    @ If out of stock, skip
+	ldr r0, =inv_peanuts
+	ldr r0, [r0]
+	cmp r0, #0
+	ble out_of_stock_item
+
+    @ Print price and start purchase function
+    ldr r0, =peanuts_price
+    bl printf
+
+    mov r0, #55
+    bl purchase_function
+
     b vending_machine_main_loop
 
 .ltorg
 
 crackers_handler:
+    @ If out of stock, skip
+	ldr r0, =inv_peanuts
+	ldr r0, [r0]
+	cmp r0, #0
+	ble out_of_stock_item
+
+    @ Print price and start purchase function
+    ldr r0, =peanuts_price
+    bl printf
+
+    mov r0, #65
+    bl purchase_function
+
     b vending_machine_main_loop
 
 .ltorg
 
 mnms_handler:
+    @ If out of stock, skip
+	ldr r0, =inv_peanuts
+	ldr r0, [r0]
+	cmp r0, #0
+	ble out_of_stock_item
+
+    @ Print price and start purchase function
+    ldr r0, =peanuts_price
+    bl printf
+
+    mov r0, #100
+    bl purchase_function
+
     b vending_machine_main_loop
 
 .ltorg
@@ -273,11 +312,11 @@ newline: .asciz "\n"
 .balign 4
 gum_price: .asciz "Gum costs $0.55\n"
 .balign 4
-choose_peanuts: .asciz "Peanuts are $0.55\n"
+peanuts_price: .asciz "Peanuts are $0.55\n"
 .balign 4
-choose_crackers: .asciz "Cheese Crackers are $0.65\n"
+crackers_price: .asciz "Cheese Crackers are $0.65\n"
 .balign 4
-choose_mnms: .asciz "M&Ms are $1.00\n"
+mnms_price: .asciz "M&Ms are $1.00\n"
 .balign 4
 money_in: .asciz "Inserted: "
 .balign 4
