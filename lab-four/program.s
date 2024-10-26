@@ -110,6 +110,12 @@ gum_handler:
     mov r0, #50
     bl purchase_function
 
+    @ Subtract from inventory
+    ldr r0, =inv_gum
+    ldr r0, [r0]
+    sub r0, #1
+    str r0, =inv_gum
+
     b vending_machine_main_loop
 
 .ltorg
@@ -127,6 +133,12 @@ peanuts_handler:
 
     mov r0, #55
     bl purchase_function
+
+    @ Subtract from inventory
+    ldr r0, =inv_peanuts
+    ldr r0, [r0]
+    sub r0, #1
+    str r0, =inv_peanuts
 
     b vending_machine_main_loop
 
@@ -146,23 +158,35 @@ crackers_handler:
     mov r0, #65
     bl purchase_function
 
+    @ Subtract from inventory
+    ldr r0, =inv_crackers
+    ldr r0, [r0]
+    sub r0, #1
+    str r0, =inv_crackers
+
     b vending_machine_main_loop
 
 .ltorg
 
 mnms_handler:
     @ If out of stock, skip
-	ldr r0, =mnms_price
+	ldr r0, =inv_mnms
 	ldr r0, [r0]
 	cmp r0, #0
 	ble out_of_stock_item
 
     @ Print price and start purchase function
-    ldr r0, =peanuts_price
+    ldr r0, =mnms_price
     bl printf
 
     mov r0, #100
     bl purchase_function
+
+    @ Subtract from inventory
+    ldr r0, =inv_mnms
+    ldr r0, [r0]
+    sub r0, #1
+    str r0, =inv_mnms
 
     b vending_machine_main_loop
 
