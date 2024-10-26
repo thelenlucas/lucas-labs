@@ -7,6 +7,8 @@
 @
 @ CHANGES INTO THUMB:
 @ 1. Memory management for literals is annoying. The .ltorg directive helps pool literals after functions that use them
+@ 2. Integer addition, since we can't use floats in thumb-1
+@ 3. Some couple of arrangement changes, since I rewrote the whole program, and wasn't entirely happy with it last lab
 @
 @ COMPILE AND RUN: 
 @ 1. as -mthumb -o source.o source.s && gcc -mthumb -o program source.o
@@ -48,6 +50,12 @@ main:
 vending_machine_main:
     @ Save link
     push {lr}
+    b vending_machine_main_loop
+vending_machine_out_of_stock:
+    @ This seems really strange being up this high, but otherwise I was running into branch out of range errors
+    @ This is a hacky solution, but it works well
+    ldr r0, =out_of_stock
+    pop {pc}
 vending_machine_main_loop:
     @ Load inventory
     mov r0, #0
@@ -222,10 +230,6 @@ out_of_stock_item:
     ldr r0, =out_of_individual_stock
     bl printf
     b vending_machine_main_loop
-
-vending_machine_out_of_stock:
-    ldr r0, =out_of_stock
-    pop {pc}
 
 .ltorg
 
