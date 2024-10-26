@@ -162,10 +162,10 @@ print_dollars:
     sub r7, r7, r6 @ Cents remainder
 
     @ Print
-    mov r0, =dollar_part_one
+    ldr r0, =dollar_part_one
     mov r1, r6
     bl printf
-    mov r0, =dollar_part_two
+    ldr r0, =dollar_part_two
     mov r1, r7
     bl printf
 
@@ -179,9 +179,10 @@ purchase_function:
     push {lr}
 
     mov r7, r0  @ Store
+    mov r6, #0  @ Amount inserted
 purchase_function_loop:
-    @ Print amount left to pay
-    ldr r0, =left_to_pay_one
+    @ Print amount inserted
+    ldr r0, =money_in
     bl printf
     mov r0, r7
     bl print_dollars
@@ -205,22 +206,16 @@ purchase_function_get_input:
 	b purchase_function_bad_payment
 
 purchase_function_dollar:
-	@ Subtract amount
-    subs r7, r7, #100
-    bl peyment_function_end_loop
+	@ Add inserted amount
+    add r6, #100
+    b purchase_function_end_loop
 
 purchase_function_quarter:
-	@ Same as above
-	ldr r0, =quarter
-	vldr.64 d1, [r0]
-	vsub.F64 d0, d0, d1
+	
 	b payment_end_loop
 
 purchase_function_dime:
-	@ Likewise
-	ldr r0, =dime
-	vldr.64 d1, [r0]
-	vsub.F64 d0, d0, d1
+	
 	b payment_end_loop
 
 purchase_function_bad_payment:
@@ -231,20 +226,18 @@ purchase_function_bad_payment:
 
 purchase_function_end_loop:
     @ Check if we're done
-    cmp r7, 0
+    cmp r6, r7
     blt purchase_function_done
     b purchase_function_loop
 
 purchase_function_done:
-    @ Negate remainder/underflow amount (can't use mvn, sad)
-    mov r1, 0
-    subs r0, r1, r7
-    mov r7, r0
+    @ Get change
+    sub r6, r7
 
     @ Print change
     ldr r0, =change
     bl printf
-    mov r0, r7
+    mov r0, r6
     bl print_dollars
     ldr r0, =newline
     bl printf
@@ -275,7 +268,7 @@ newline: .asciz "\n"
 .balign 4
 gum_price: .asciz "Gum costs $0.55\n"
 .balign 4
-left_to_pay_one: .asciz "You have: "
+money_in: .asciz "Inserted: "
 .balign 4
 bills_display: .asciz "Enter Dollar (B)ill, (Q)aurter, or (D)ime: "
 .balign 4
