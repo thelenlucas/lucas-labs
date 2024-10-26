@@ -55,6 +55,7 @@ vending_machine_out_of_stock:
     @ This seems really strange being up this high, but otherwise I was running into branch out of range errors
     @ This is a hacky solution, but it works well
     ldr r0, =out_of_stock
+    bl printf
     pop {pc}
 vending_machine_main_loop:
     @ Load inventory
