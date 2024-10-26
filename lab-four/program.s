@@ -229,7 +229,7 @@ purchase_function_bad_payment:
 purchase_function_end_loop:
     @ Check if we're done
     cmp r6, r7
-    blt purchase_function_done
+    bgt purchase_function_done
     b purchase_function_loop
 
 purchase_function_done:
