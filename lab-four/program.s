@@ -102,13 +102,13 @@ gum_handler:
 	ldr r0, =inv_gum
 	ldr r0, [r0]
 	cmp r0, #0
-	ble out_of_stock
+	ble out_of_stock_item
 
     @ Print price and start purchase function
     ldr r0, =gum_price
     bl printf
 
-    ldr r0, #55
+    mov r0, #55
     bl purchase_function
 
     b vending_machine_main_loop
@@ -135,7 +135,7 @@ inventory_handler:
 
 .ltorg
 
-out_of_stock:
+out_of_stock_item:
     @ Inform and loop
     ldr r0, =out_of_individual_stock
     bl printf
