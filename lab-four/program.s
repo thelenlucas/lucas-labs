@@ -97,7 +97,6 @@ vending_machine_main_loop:
 .ltorg
 
 gum_handler:
-    b vending_machine_main_loop
     @ If out of stock, skip
 	ldr r0, =inv_gum
 	ldr r0, [r0]
