@@ -212,11 +212,11 @@ purchase_function_dollar:
 
 purchase_function_quarter:
 	
-	b payment_end_loop
+	b purchase_function_end_loop
 
 purchase_function_dime:
 	
-	b payment_end_loop
+	b purchase_function_end_loop
 
 purchase_function_bad_payment:
 	@ Give feedback and loop back
