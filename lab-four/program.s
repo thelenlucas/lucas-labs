@@ -212,11 +212,11 @@ purchase_function_dollar:
     b purchase_function_end_loop
 
 purchase_function_quarter:
-	
+	add r6, #25
 	b purchase_function_end_loop
 
 purchase_function_dime:
-	
+    add r6, #10
 	b purchase_function_end_loop
 
 purchase_function_bad_payment:
@@ -269,6 +269,12 @@ dollar_part_two: .asciz "%02d"
 newline: .asciz "\n"
 .balign 4
 gum_price: .asciz "Gum costs $0.55\n"
+.balign 4
+choose_peanuts: .asciz "Peanuts are $0.55\n"
+.balign 4
+choose_crackers: .asciz "Cheese Crackers are $0.65\n"
+.balign 4
+choose_mnms: .asciz "M&Ms are $1.00\n"
 .balign 4
 money_in: .asciz "Inserted: "
 .balign 4
