@@ -158,7 +158,7 @@ print_dollars:
     @ R0 has the dollar amount now
 
     @ No dollar amount we're handling should be above 2.00, so we don't need to bother with module thankfully
-    sub r7, r7, r0 @ Cents remainder
+    sub r7, r0 @ Cents remainder
 
     @ Print
     ldr r0, =dollar_part_one
