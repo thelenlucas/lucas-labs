@@ -140,7 +140,7 @@ crackers_handler:
 	ble out_of_stock_item
 
     @ Print price and start purchase function
-    ldr r0, =peanuts_price
+    ldr r0, =crackers_price
     bl printf
 
     mov r0, #65
@@ -152,7 +152,7 @@ crackers_handler:
 
 mnms_handler:
     @ If out of stock, skip
-	ldr r0, =inv_peanuts
+	ldr r0, =mnms_price
 	ldr r0, [r0]
 	cmp r0, #0
 	ble out_of_stock_item
