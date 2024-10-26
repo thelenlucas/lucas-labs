@@ -154,12 +154,10 @@ print_dollars:
     @ Get dollar portion
     movs r1, #100
     bl __aeabi_uidiv    @ Divide
+    mov r6, r0 @ Save because I'm parinoid
 
-    @ R0 has the dollar amount now
-
-    @ No dollar amount we're handling should be above 2.00, so we don't need to bother with module thankfully
-    sub r7, r0 @ Cents remainder
-
+    @ No dollar amount we're handling should be above 2.00, so we don't need to bother with modulo thankfully
+    sub r7, r6 @ Cents remainder
     @ Print
     ldr r0, =dollar_part_one
     mov r1, r6
