@@ -319,7 +319,7 @@ purchase_function_end_loop:
     @ Check if we're done
     pop {r7}
     cmp r6, r7
-    bgt purchase_function_done
+    bge purchase_function_done
     b purchase_function_loop
 
 purchase_function_done:
