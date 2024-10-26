@@ -114,7 +114,8 @@ gum_handler:
     ldr r0, =inv_gum
     ldr r0, [r0]
     sub r0, #1
-    str r0, =inv_gum
+    ldr r1, =inv_gum
+    str r0, [r1]
 
     b vending_machine_main_loop
 
@@ -138,7 +139,8 @@ peanuts_handler:
     ldr r0, =inv_peanuts
     ldr r0, [r0]
     sub r0, #1
-    str r0, =inv_peanuts
+    ldr r1, =inv_peanuts
+    str r0, [r1]
 
     b vending_machine_main_loop
 
@@ -162,7 +164,8 @@ crackers_handler:
     ldr r0, =inv_crackers
     ldr r0, [r0]
     sub r0, #1
-    str r0, =inv_crackers
+    ldr r1, =inv_crackers
+    str r0, [r1]
 
     b vending_machine_main_loop
 
@@ -186,7 +189,8 @@ mnms_handler:
     ldr r0, =inv_mnms
     ldr r0, [r0]
     sub r0, #1
-    str r0, =inv_mnms
+    ldr r1, =inv_mnms
+    str r0, [r1]
 
     b vending_machine_main_loop
 
