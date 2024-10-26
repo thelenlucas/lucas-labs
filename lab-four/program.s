@@ -45,7 +45,11 @@ main:
 
 .ltorg	@ Force the assembler to stick literals here, so they're still accessable later. This is why I hate thumb programming lol
 
-@ Handles the mainvending_machine_main_loop of:
+@ -------------------------
+@ MAIN VENDING MACHINE LOOP
+@ -------------------------
+
+@ Handles the main vending_machine_main_loop of:
 @ 1. Check for empty machine
 @ 2. Display Choices and prompt for user input
 @ 3. Jump to appropriate handler function for food type
@@ -347,7 +351,10 @@ purchase_function_done:
 @ Data section
 .data
 
-@ Strings
+@ -------
+@ STRINGS
+@ -------
+
 .balign 4   @ Variables are still 32-bit, only instructions are 16-bit
 welcome:    .asciz "Welcome to the vending machine!\n"
 .balign 4  
@@ -387,7 +394,10 @@ inventory_msg_three: .asciz "Cheese Crackers: %d\n"
 .balign 4
 inventory_msg_four: .asciz "M&Ms: %d\n"
 
-@ Inventory
+@ ---------
+@ INVENTORY
+@ ---------
+
 .balign 4
 inv_gum: .word 2
 .balign 4
@@ -397,7 +407,10 @@ inv_crackers: .word 2
 .balign 4
 inv_mnms: .word 2
 
-@ Input handling
+@ ----------------------------
+@ INPUT HANDLING WORKING SPACE
+@ ----------------------------
+
 .balign 4
 format_char: .asciz " %c"
 .balign 4
