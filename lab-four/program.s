@@ -25,6 +25,8 @@
 
 .text				@ Code section
 
+@ Instead of jumping to an exit function, encapsulate it all in main to avoid long direct branches
+
 .thumb_func	@ Indicate that the following is a Thumb function, we won't leave so we don't need to re-identify
 main:
     @ Save the link register (return address)
@@ -233,6 +235,10 @@ out_of_stock_item:
     b vending_machine_main_loop
 
 .ltorg
+
+@ -----------------
+@ UTILITY FUNCTIONS
+@ -----------------
 
 @ Prints a dollar amount using the price in cents in r0
 @ The caller function usually uses r6/7, so we'll save those
