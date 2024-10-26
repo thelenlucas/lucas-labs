@@ -197,6 +197,22 @@ mnms_handler:
 .ltorg
 
 inventory_handler:
+    ldr r0, =inventory_msg_one
+    ldr r1, =inv_gum
+    ldr r1, [r1]
+    bl printf
+    ldr r0, =inventory_msg_two
+    ldr r1, =inv_peanuts
+    ldr r1, [r1]
+    bl printf
+    ldr r0, =inventory_msg_three
+    ldr r1, =inv_crackers
+    ldr r1, [r1]
+    bl printf
+    ldr r0, =inventory_msg_four
+    ldr r1, =inv_mnms
+    ldr r1, [r1]
+    bl printf
     b vending_machine_main_loop
 
 .ltorg
@@ -328,7 +344,7 @@ out_of_stock: .asciz "Sorry, vending machine out of stock! Exiting...\n"
 .balign 4
 choices: .asciz "\nPlease choose Gum (G), Peanuts (P), Cheese Crackers (C), or M&Ms (M): "
 .balign 4
-invalid_choice: .asciz "Sorry, invalid choice, please choose again."
+invalid_choice: .asciz "Sorry, invalid choice, please choose again.\n"
 .balign 4
 out_of_individual_stock: .asciz "Sorry, out of that item. Please choose another."
 .balign 4
@@ -351,6 +367,14 @@ money_in: .asciz "Inserted: "
 bills_display: .asciz "Enter Dollar (B)ill, (Q)aurter, or (D)ime: "
 .balign 4
 change: .asciz "Change: "
+.balign 4
+inventory_msg_one: .asciz "Inventory Remaining:\nGum: %d\n"
+.balign 4
+inventory_msg_two: .asciz "Peanuts: %d\n"
+.balign 4
+inventory_msg_three: .asciz "Cheese Crackers: %d\n"
+.balign 4
+inventory_msg_four: .asciz "M&Ms: %d\n"
 
 @ Inventory
 .balign 4
